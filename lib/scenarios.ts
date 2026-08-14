@@ -1,7 +1,26 @@
-import { acceptableAnswers, conjugate, HonorificTarget, VERB_BANK, VerbEntry } from "./verbs";
+import {
+  acceptableAnswers,
+  conjugate,
+  HonorificTarget,
+  VERB_BANK,
+  VerbEntry,
+} from "./verbs";
 
-export type ScenarioCategory = "customer-service" | "workplace" | "phone" | "email" | "meeting";
+export type ScenarioCategory =
+  | "customer-service"
+  | "workplace"
+  | "phone"
+  | "email"
+  | "meeting";
 export type Difficulty = "beginner" | "intermediate" | "advanced";
+
+export const CATEGORY_LABEL: Record<ScenarioCategory, string> = {
+  "customer-service": "Customer service",
+  workplace: "Workplace",
+  phone: "Phone",
+  email: "Email",
+  meeting: "Meeting someone new",
+};
 
 export interface Scenario {
   id: string;
@@ -22,7 +41,10 @@ export interface Scenario {
 
 export function scenarioVerb(scenario: Scenario): VerbEntry {
   const verb = VERB_BANK.find((v) => v.id === scenario.verbId);
-  if (!verb) throw new Error(`Unknown verb id in scenario ${scenario.id}: ${scenario.verbId}`);
+  if (!verb)
+    throw new Error(
+      `Unknown verb id in scenario ${scenario.id}: ${scenario.verbId}`,
+    );
   return verb;
 }
 
@@ -57,7 +79,8 @@ export const SCENARIO_BANK: Scenario[] = [
     actorIsSelf: true,
     verbId: "annaisuru",
     targetRegister: "kenjougo",
-    promptCue: "You offer to guide the customer to the section they're looking for.",
+    promptCue:
+      "You offer to guide the customer to the section they're looking for.",
     explanation:
       "This is your own action (案内する) directed at a customer you should honor — humble your own action with kenjougo: ご案内する.",
     difficulty: "beginner",
@@ -72,7 +95,7 @@ export const SCENARIO_BANK: Scenario[] = [
     targetRegister: "kenjougo",
     promptCue: "You offer to carry the customer's bag for them.",
     explanation:
-      "Again your own action (持つ) toward the customer — kenjougo: お持ちする. This is the classic \"let me carry that for you\" pattern in Japanese service settings.",
+      'Again your own action (持つ) toward the customer — kenjougo: お持ちする. This is the classic "let me carry that for you" pattern in Japanese service settings.',
     difficulty: "beginner",
   },
 
@@ -81,7 +104,8 @@ export const SCENARIO_BANK: Scenario[] = [
     id: "wp-01",
     category: "workplace",
     setting: "You're talking with a coworker from your own company.",
-    otherParty: "Your boss, discussed with a coworker (same company — both of you are uchi relative to the boss)",
+    otherParty:
+      "Your boss, discussed with a coworker (same company — both of you are uchi relative to the boss)",
     actorIsSelf: false,
     verbId: "kuru",
     targetRegister: "sonkeigo",
@@ -94,11 +118,13 @@ export const SCENARIO_BANK: Scenario[] = [
     id: "wp-02",
     category: "workplace",
     setting: "You're talking with a client from another company.",
-    otherParty: "Your boss, discussed with an outside client (the client is soto)",
+    otherParty:
+      "Your boss, discussed with an outside client (the client is soto)",
     actorIsSelf: false,
     verbId: "kuru",
     targetRegister: "kenjougo",
-    promptCue: "Tell the client: your boss will be coming to the meeting today.",
+    promptCue:
+      "Tell the client: your boss will be coming to the meeting today.",
     explanation:
       "Same actor (your boss) and same verb as wp-01, but the register flips: because you're speaking to an outside client, your boss is now part of *your* in-group relative to the listener. You humble your own group's action in front of an outsider, regardless of internal rank — kenjougo: 参る, not いらっしゃる. This is the single most common mistake learners make with keigo.",
     difficulty: "advanced",
@@ -112,8 +138,10 @@ export const SCENARIO_BANK: Scenario[] = [
     actorIsSelf: true,
     verbId: "iu",
     targetRegister: "kenjougo",
-    promptCue: "You're about to answer (say something to) your department head.",
-    explanation: "Your own action toward a superior — humble it with kenjougo: 申す (or 申し上げる).",
+    promptCue:
+      "You're about to answer (say something to) your department head.",
+    explanation:
+      "Your own action toward a superior — humble it with kenjougo: 申す (or 申し上げる).",
     difficulty: "intermediate",
   },
   {
@@ -138,7 +166,8 @@ export const SCENARIO_BANK: Scenario[] = [
     actorIsSelf: false,
     verbId: "iru",
     targetRegister: "kenjougo",
-    promptCue: "Tell the caller whether your section chief is in the office right now.",
+    promptCue:
+      "Tell the caller whether your section chief is in the office right now.",
     explanation:
       "Same uchi/soto logic as wp-02: your section chief is part of your own company, and the caller is outside it. You describe your own group's state humbly to an outsider — kenjougo: おる (e.g. 「ただいまおりません」), not いらっしゃる.",
     difficulty: "advanced",
@@ -166,7 +195,8 @@ export const SCENARIO_BANK: Scenario[] = [
     verbId: "renrakusuru",
     targetRegister: "kenjougo",
     promptCue: "You say you will contact them back with a reply.",
-    explanation: "Your own action toward the caller — kenjougo pattern: ご連絡する.",
+    explanation:
+      "Your own action toward the caller — kenjougo pattern: ご連絡する.",
     difficulty: "intermediate",
   },
 
@@ -180,7 +210,8 @@ export const SCENARIO_BANK: Scenario[] = [
     verbId: "okuru",
     targetRegister: "kenjougo",
     promptCue: "You tell the client you will send the requested documents.",
-    explanation: "Your own action toward the client — kenjougo pattern: お送りする.",
+    explanation:
+      "Your own action toward the client — kenjougo pattern: お送りする.",
     difficulty: "beginner",
   },
   {
@@ -205,7 +236,8 @@ export const SCENARIO_BANK: Scenario[] = [
     verbId: "shiru",
     targetRegister: "kenjougo",
     promptCue: "You say you are already aware of the issue.",
-    explanation: "Your own state of knowing, toward a client — kenjougo: 存じております (from 存じる).",
+    explanation:
+      "Your own state of knowing, toward a client — kenjougo: 存じております (from 存じる).",
     difficulty: "advanced",
   },
 
@@ -219,7 +251,8 @@ export const SCENARIO_BANK: Scenario[] = [
     verbId: "kuru",
     targetRegister: "sonkeigo",
     promptCue: "You ask if they'll be attending tomorrow's event too.",
-    explanation: "Someone you've just met is soto by default — their action gets sonkeigo: いらっしゃる.",
+    explanation:
+      "Someone you've just met is soto by default — their action gets sonkeigo: いらっしゃる.",
     difficulty: "beginner",
   },
   {
@@ -255,7 +288,8 @@ export const SCENARIO_BANK: Scenario[] = [
     verbId: "taberu",
     targetRegister: "kenjougo",
     promptCue: "You accept and say you'll eat it.",
-    explanation: "Your own action toward someone you're showing respect to — kenjougo: いただく.",
+    explanation:
+      "Your own action toward someone you're showing respect to — kenjougo: いただく.",
     difficulty: "beginner",
   },
 ];

@@ -26,6 +26,30 @@ export function recordMiss(verbId: string, target: HonorificTarget): Progress {
   return progress;
 }
 
+export function resetProgress(): void {
+  window.localStorage.removeItem(STORAGE_KEY);
+}
+
+export interface WeakVerb {
+  verb: VerbEntry;
+  target: HonorificTarget;
+  misses: number;
+}
+
+// Same verb/target pairs pickQuestion weights toward, surfaced for display
+// instead of just influencing selection odds.
+export function weakestVerbs(progress: Progress, limit = 6): WeakVerb[] {
+  const entries: WeakVerb[] = [];
+  for (const verb of VERB_BANK) {
+    for (const target of ["sonkeigo", "kenjougo"] as const) {
+      if (conjugate(verb, target) === null) continue;
+      const misses = progress[questionKey(verb.id, target)] ?? 0;
+      if (misses > 0) entries.push({ verb, target, misses });
+    }
+  }
+  return entries.sort((a, b) => b.misses - a.misses).slice(0, limit);
+}
+
 export interface Question {
   verb: VerbEntry;
   target: HonorificTarget;

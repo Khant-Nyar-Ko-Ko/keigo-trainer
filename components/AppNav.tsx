@@ -8,18 +8,22 @@ const LINKS = [
   { href: "/scenarios", label: "Scenarios" },
   { href: "/diagnostic", label: "Reasoning" },
   { href: "/notes", label: "Notes" },
+  { href: "/progress", label: "Progress" },
 ] as const;
 
 export default function AppNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="mb-10 flex w-full max-w-lg items-center justify-between">
-      <Link href="/" className="flex items-baseline gap-2 font-display text-lg">
-        <span className="text-red">敬語</span>
+    <nav className="mb-10 flex w-full max-w-lg flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-0">
+      <Link
+        href="/"
+        className="flex shrink-0 items-baseline gap-2 whitespace-nowrap font-display text-lg"
+      >
+        <span lang="ja" className="text-red">敬語</span>
         <span>Companion</span>
       </Link>
-      <div className="flex gap-6 text-sm text-ink-soft">
+      <div className="flex w-full items-center justify-between text-sm text-ink-soft sm:w-auto sm:justify-end sm:gap-6">
         {LINKS.map((link) => (
           <Link
             key={link.href}

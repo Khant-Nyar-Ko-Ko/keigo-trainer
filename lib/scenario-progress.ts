@@ -21,9 +21,34 @@ export function recordScenarioMiss(scenarioId: string): ScenarioProgress {
   return progress;
 }
 
+export function resetScenarioProgress(): void {
+  window.localStorage.removeItem(STORAGE_KEY);
+}
+
+export interface WeakScenario {
+  scenario: Scenario;
+  misses: number;
+}
+
+export function weakestScenarios(
+  progress: ScenarioProgress,
+  limit = 6,
+): WeakScenario[] {
+  return SCENARIO_BANK.map((scenario) => ({
+    scenario,
+    misses: progress[scenario.id] ?? 0,
+  }))
+    .filter((entry) => entry.misses > 0)
+    .sort((a, b) => b.misses - a.misses)
+    .slice(0, limit);
+}
+
 // Leitner-style weighting, same approach as lib/progress.ts: scenarios missed
 // more often surface more often.
-export function pickScenario(progress: ScenarioProgress, exclude?: Scenario): Scenario {
+export function pickScenario(
+  progress: ScenarioProgress,
+  exclude?: Scenario,
+): Scenario {
   const pool = SCENARIO_BANK.filter((s) => !exclude || s.id !== exclude.id);
   const candidates = pool.length > 0 ? pool : SCENARIO_BANK;
   const weights = candidates.map((s) => (progress[s.id] ?? 0) + 1);

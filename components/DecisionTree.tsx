@@ -120,7 +120,7 @@ export default function DecisionTree() {
         <div className="flex flex-col gap-4 border border-line bg-paper-raised p-6">
           <div className="flex items-center gap-3">
             <RegisterScale target={register} />
-            <span className="font-semibold text-ink">
+            <span lang="ja" className="font-semibold text-ink">
               {register === "sonkeigo" ? "尊敬語" : "謙譲語"}
             </span>
           </div>
@@ -128,12 +128,16 @@ export default function DecisionTree() {
           <div className="border-t border-line pt-4">
             <p className="mb-1 text-xs uppercase tracking-wide text-ink-faint">Example</p>
             <div className="flex items-baseline gap-2">
-              <span className="font-display text-2xl">{verb.dictionaryForm}</span>
+              <span lang="ja" className="font-display text-2xl">
+                {verb.dictionaryForm}
+              </span>
               <span className="text-sm text-ink-faint">
-                {verb.reading} — {verb.meaning}
+                <span lang="ja">{verb.reading}</span> — {verb.meaning}
               </span>
             </div>
-            <div className="mt-1 font-display text-xl text-red">{conjugate(verb, register)}</div>
+            <div lang="ja" className="mt-1 font-display text-xl text-red">
+              {conjugate(verb, register)}
+            </div>
           </div>
           <div className="flex gap-3">
             <button

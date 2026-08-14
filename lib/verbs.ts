@@ -1,5 +1,10 @@
 export type HonorificTarget = "sonkeigo" | "kenjougo";
 
+export const TARGET_LABEL: Record<HonorificTarget, string> = {
+  sonkeigo: "尊敬語",
+  kenjougo: "謙譲語",
+};
+
 export interface VerbEntry {
   id: string;
   dictionaryForm: string;
