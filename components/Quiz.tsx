@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { GradeResult, gradeAnswer } from "@/lib/grade";
 import { Question, loadProgress, pickQuestion, recordMiss } from "@/lib/progress";
 import { HonorificTarget } from "@/lib/verbs";
+import RegisterScale from "./RegisterScale";
 
 const TARGET_LABEL: Record<HonorificTarget, string> = {
-  sonkeigo: "尊敬語 (Sonkeigo)",
-  kenjougo: "謙譲語 (Kenjougo)",
+  sonkeigo: "尊敬語",
+  kenjougo: "謙譲語",
 };
 
 export default function Quiz() {
@@ -67,22 +68,20 @@ export default function Quiz() {
   }
 
   if (!question) {
-    return <div className="text-zinc-400">Loading...</div>;
+    return <div className="text-ink-faint">Loading...</div>;
   }
 
   return (
-    <div className="flex flex-col w-full max-w-md gap-6">
-      <div className="text-sm text-right text-zinc-500">
+    <div className="flex w-full max-w-md flex-col gap-6">
+      <div className="text-right text-sm text-ink-faint">
         {stats.correct} / {stats.total} correct
       </div>
 
-      <div className="flex flex-col items-center gap-2 p-8 text-center bg-white border rounded-xl border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="text-4xl font-semibold">{question.verb.dictionaryForm}</div>
-        <div className="text-zinc-500">
+      <div className="flex flex-col items-center gap-2 border border-line bg-paper-raised p-8 text-center">
+        <RegisterScale target={question.target} />
+        <div className="mt-2 font-display text-4xl">{question.verb.dictionaryForm}</div>
+        <div className="text-ink-faint">
           {question.verb.reading} — {question.verb.meaning}
-        </div>
-        <div className="px-3 py-1 mt-2 text-sm font-medium rounded-full bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-          {TARGET_LABEL[question.target]}
         </div>
       </div>
 
@@ -94,12 +93,12 @@ export default function Quiz() {
           disabled={!!result}
           placeholder="Type the converted form..."
           autoFocus
-          className="px-4 py-3 text-lg bg-white border rounded-lg outline-none border-zinc-300 focus:border-zinc-500 disabled:opacity-60 dark:border-zinc-700 dark:bg-zinc-900"
+          className="border border-line-strong bg-paper px-4 py-3 text-lg text-ink outline-none focus:border-red disabled:opacity-60"
         />
         {!result && (
           <button
             type="submit"
-            className="px-4 py-3 font-medium text-white rounded-lg bg-zinc-900 hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            className="bg-ink px-4 py-3 font-medium text-paper hover:bg-red-deep"
           >
             Check
           </button>
@@ -108,37 +107,33 @@ export default function Quiz() {
 
       {result && (
         <div
-          className={`flex flex-col gap-3 rounded-lg border p-4 ${result.correct
-              ? "border-green-300 bg-green-50 dark:border-green-800 dark:bg-green-950"
-              : "border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950"
-            }`}
+          className={`flex flex-col gap-3 border p-4 ${
+            result.correct ? "border-green bg-green-soft" : "border-red bg-red-soft"
+          }`}
         >
-          <div className="font-medium">
-            {result.correct ? "Correct!" : "Not quite."}
-          </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
-            Correct answer: <span className="font-semibold text-zinc-900 dark:text-zinc-100">{result.canonicalAnswer}</span>
+          <div className="font-semibold">{result.correct ? "Correct!" : "Not quite."}</div>
+          <div className="text-sm text-ink-soft">
+            Correct answer: <span className="font-semibold text-ink">{result.canonicalAnswer}</span>{" "}
+            ({TARGET_LABEL[question.target]})
           </div>
 
           {!result.correct && !explanation && (
             <button
               onClick={handleExplain}
               disabled={explanationLoading}
-              className="self-start rounded-md border border-zinc-300 px-3 py-1.5 text-sm hover:bg-zinc-100 disabled:opacity-60 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              className="self-start border border-line-strong px-3 py-1.5 text-sm hover:bg-paper-sunken disabled:opacity-60"
             >
               {explanationLoading ? "Explaining..." : "Explain why"}
             </button>
           )}
 
           {explanation && (
-            <div className="p-3 text-sm bg-white rounded-md text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
-              {explanation}
-            </div>
+            <div className="bg-paper-raised p-3 text-sm text-ink-soft">{explanation}</div>
           )}
 
           <button
             onClick={handleNext}
-            className="self-start px-4 py-2 text-sm font-medium text-white rounded-md bg-zinc-900 hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            className="self-start bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-red-deep"
           >
             Next question
           </button>

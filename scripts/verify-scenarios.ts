@@ -1,4 +1,4 @@
-import { SCENARIO_BANK, scenarioCorrectAnswer } from "../lib/scenarios.ts";
+import { SCENARIO_BANK, scenarioCorrectAnswer } from "../lib/scenarios";
 
 let bad = 0;
 for (const s of SCENARIO_BANK) {

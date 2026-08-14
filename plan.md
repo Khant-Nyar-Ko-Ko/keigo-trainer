@@ -19,25 +19,27 @@ A hosted Japanese 敬語 (keigo) study app for any learner, not just its author.
 | LLM cost model | I cover it. Claude Haiku 4.5 (not Opus 5 — ~5x cheaper, plenty capable for short explanations), fired only as a fallback, with a per-learner daily cap |
 | Core differentiator | Hand-authored scenario/judgment bank + decision-tree reasoning framework — zero marginal cost, teaches what other tools don't |
 
-## Current state (Phase 0 — done)
+## Current state (Phase 0 + Phase 1 — done)
 
+**Phase 0 — verb drills:**
 - Deterministic verb bank (29 verbs: 15 irregular + 14 regular-pattern) — [`lib/verbs.ts`](lib/verbs.ts)
 - Conjugator applying irregular lookups or the お/ご+stem pattern — same file
 - Grading with normalization/variant tolerance — [`lib/grade.ts`](lib/grade.ts)
 - Leitner-style weighted question picker (missed verbs surface more) via localStorage — [`lib/progress.ts`](lib/progress.ts)
-- Single-page quiz UI — [`components/Quiz.tsx`](components/Quiz.tsx)
+- Quiz UI — [`components/Quiz.tsx`](components/Quiz.tsx), route `/`
 - LLM explanation on wrong answers, currently *always* LLM-based (Claude Opus 5) — [`app/api/explain/route.ts`](app/api/explain/route.ts) — **superseded by Phase 2 below**
 
-Verified end-to-end (correct/incorrect grading, explain-on-miss, graceful fallback with no API key configured).
+**Phase 1 — the differentiator:**
+- Hand-authored scenario bank — [`lib/scenarios.ts`](lib/scenarios.ts), 17 scenarios across all 5 categories (pilot scope; scaling to 150–300 remains open work), each verified against the conjugator via `npm run verify:scenarios`
+- Free rule-based mistake diagnosis for scenarios (wrong-register detection, no LLM) — [`lib/scenario-grade.ts`](lib/scenario-grade.ts)
+- Scenario practice UI — [`components/ScenarioPractice.tsx`](components/ScenarioPractice.tsx), route `/scenarios`
+- Decision-tree diagnostic mode (actor → addressee → in-group reasoning, derives the register and shows a live conjugated example) — [`lib/decision-tree.ts`](lib/decision-tree.ts), [`components/DecisionTree.tsx`](components/DecisionTree.tsx), route `/diagnostic`
+- "Textbook vs. real Japanese" reference notes (5 entries, honestly hedged between settled and debated points) — [`lib/textbook-notes.ts`](lib/textbook-notes.ts), route `/notes`
+- Visual identity: white background, red/green accent system, the register-scale motif (a vertical marker showing 尊敬語/謙譲語 position) reused across all four screens — [`app/globals.css`](app/globals.css), [`components/RegisterScale.tsx`](components/RegisterScale.tsx), [`components/AppNav.tsx`](components/AppNav.tsx)
 
-## Phase 1 — Scenario bank + judgment framework (the differentiator)
+Verified end-to-end in the browser, light and dark mode, including the flip-case reasoning path (wp-01/wp-02, ph-01/ph-02) in both Scenario Practice and the decision tree.
 
-Ship the unique, zero-cost part first. Still runs single-browser on localStorage — no backend dependency.
-
-- Hand-authored scenario bank (target: 150–300 scenarios), static data checked into the repo, covering: customer service, workplace hierarchy, phone calls, business email, meeting someone new
-- Each scenario: who's speaking, who they're speaking to/about, the setting, and the correct register with a written explanation of *why* (uchi/soto reasoning) — authored once, served free forever
-- Decision-tree diagnostic mode: "Who are you talking to? Are they in your in-group? What's the setting?" — walks the learner through the reasoning process itself, not just a single answer
-- "Textbook vs. real Japanese" reference section: places taught keigo diverges from actual workplace usage (e.g. 了解しました vs かしこまりました) — authored content, high value, rare elsewhere for free
+**Remaining Phase 1 work:** scaling the scenario bank from 17 pilot entries toward the 150–300 target.
 
 ## Phase 2 — Tiered explain-on-miss
 

@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --ink: #18181a;
+  --ink-soft: #57585c;
+  --ink-faint: #8a8b8f;
+  --paper: #ffffff;
+  --paper-raised: #fafafa;
+  --paper-sunken: #f0f0f0;
+  --line: #e2e2e2;
+  --line-strong: #c7c7c7;
+  --red: #c1272d;
+  --red-deep: #8f1b20;
+  --red-soft: #fbe7e6;
+  --green: #1f7a4d;
+  --green-soft: #e3f3ea;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --ink: #f1f1f1;
+    --ink-soft: #b6b7ba;
+    --ink-faint: #85868a;
+    --paper: #131313;
+    --paper-raised: #1b1b1b;
+    --paper-sunken: #0c0c0c;
+    --line: #2c2c2c;
+    --line-strong: #3e3e3e;
+    --red: #e2645f;
+    --red-deep: #b23b38;
+    --red-soft: #3a1d1b;
+    --green: #4caf7d;
+    --green-soft: #16281f;
   }
 }
 
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-paper-sunken: var(--paper-sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-red: var(--red);
+  --color-red-deep: var(--red-deep);
+  --color-red-soft: var(--red-soft);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --font-display: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
 }
