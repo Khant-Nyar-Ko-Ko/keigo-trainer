@@ -1,3 +1,4 @@
+import { storageRepo } from "./storage/LocalStorageRepo";
 import { Scenario, SCENARIO_BANK } from "./scenarios";
 import { pushScenarioProgressDelta, pushScenarioProgressReset } from "./sync";
 
@@ -7,25 +8,19 @@ const STORAGE_KEY = SCENARIO_PROGRESS_STORAGE_KEY;
 export type ScenarioProgress = Record<string, number>;
 
 export function loadScenarioProgress(): ScenarioProgress {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as ScenarioProgress) : {};
-  } catch {
-    return {};
-  }
+  return storageRepo.getItem<ScenarioProgress>(STORAGE_KEY) ?? {};
 }
 
 export function recordScenarioMiss(scenarioId: string): ScenarioProgress {
   const progress = loadScenarioProgress();
   progress[scenarioId] = (progress[scenarioId] ?? 0) + 1;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  storageRepo.setItem(STORAGE_KEY, progress);
   void pushScenarioProgressDelta(scenarioId, 1);
   return progress;
 }
 
 export function resetScenarioProgress(): void {
-  window.localStorage.removeItem(STORAGE_KEY);
+  storageRepo.removeItem(STORAGE_KEY);
   void pushScenarioProgressReset();
 }
 

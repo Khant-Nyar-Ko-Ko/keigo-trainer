@@ -11,7 +11,10 @@ export interface VerbEntry {
   reading: string;
   meaning: string;
   type: "irregular" | "regular";
-  // regular verbs: masu-stem (or suru-compound noun) + prefix, pattern-conjugated
+  // masu-stem (or suru-compound noun) + honorific prefix — every verb has one,
+  // regular or not. For "regular" verbs this pattern IS the conjugation; for
+  // "irregular" verbs it's only used to recognize the regular-pattern mistake
+  // a learner makes when they apply it to a verb that doesn't take it.
   stem?: string;
   prefix?: "お" | "ご";
   // irregular verbs: hardcoded forms (undefined = no natural form in that category)
@@ -29,6 +32,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "いく",
     meaning: "to go",
     type: "irregular",
+    stem: "行き",
+    prefix: "お",
     irregularSonkeigo: "いらっしゃる",
     irregularKenjougo: "参る",
   },
@@ -38,6 +43,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "くる",
     meaning: "to come",
     type: "irregular",
+    stem: "来",
+    prefix: "お",
     irregularSonkeigo: "いらっしゃる",
     alternateSonkeigo: ["お越しになる"],
     irregularKenjougo: "参る",
@@ -48,6 +55,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "いる",
     meaning: "to be (animate)",
     type: "irregular",
+    stem: "い",
+    prefix: "お",
     irregularSonkeigo: "いらっしゃる",
     irregularKenjougo: "おる",
   },
@@ -57,6 +66,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "する",
     meaning: "to do",
     type: "irregular",
+    stem: "し",
+    prefix: "お",
     irregularSonkeigo: "なさる",
     irregularKenjougo: "いたす",
   },
@@ -66,6 +77,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "いう",
     meaning: "to say",
     type: "irregular",
+    stem: "言い",
+    prefix: "お",
     irregularSonkeigo: "おっしゃる",
     irregularKenjougo: "申す",
     alternateKenjougo: ["申し上げる"],
@@ -76,6 +89,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "みる",
     meaning: "to see / watch",
     type: "irregular",
+    stem: "見",
+    prefix: "お",
     irregularSonkeigo: "ご覧になる",
     irregularKenjougo: "拝見する",
   },
@@ -85,6 +100,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "たべる",
     meaning: "to eat",
     type: "irregular",
+    stem: "食べ",
+    prefix: "お",
     irregularSonkeigo: "召し上がる",
     irregularKenjougo: "いただく",
   },
@@ -94,6 +111,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "のむ",
     meaning: "to drink",
     type: "irregular",
+    stem: "飲み",
+    prefix: "お",
     irregularSonkeigo: "召し上がる",
     irregularKenjougo: "いただく",
   },
@@ -103,6 +122,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "しる",
     meaning: "to know",
     type: "irregular",
+    stem: "知り",
+    prefix: "お",
     irregularSonkeigo: "ご存知だ",
     irregularKenjougo: "存じる",
     alternateKenjougo: ["存じ上げる"],
@@ -113,6 +134,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "くれる",
     meaning: "to give (to me)",
     type: "irregular",
+    stem: "くれ",
+    prefix: "お",
     irregularSonkeigo: "くださる",
   },
   {
@@ -121,6 +144,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "あげる",
     meaning: "to give",
     type: "irregular",
+    stem: "あげ",
+    prefix: "お",
     irregularKenjougo: "さしあげる",
   },
   {
@@ -129,6 +154,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "もらう",
     meaning: "to receive",
     type: "irregular",
+    stem: "もらい",
+    prefix: "お",
     irregularKenjougo: "いただく",
   },
   {
@@ -137,6 +164,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "しぬ",
     meaning: "to die",
     type: "irregular",
+    stem: "死に",
+    prefix: "お",
     irregularSonkeigo: "お亡くなりになる",
   },
   {
@@ -145,6 +174,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "きる",
     meaning: "to wear",
     type: "irregular",
+    stem: "着",
+    prefix: "お",
     irregularSonkeigo: "お召しになる",
   },
   {
@@ -153,6 +184,8 @@ export const VERB_BANK: VerbEntry[] = [
     reading: "ねる",
     meaning: "to sleep",
     type: "irregular",
+    stem: "寝",
+    prefix: "お",
     irregularSonkeigo: "お休みになる",
   },
 
@@ -296,6 +329,21 @@ export function conjugate(
         : verb.irregularKenjougo) ?? null
     );
   }
+  if (!verb.stem || !verb.prefix) return null;
+  return target === "sonkeigo"
+    ? `${verb.prefix}${verb.stem}になる`
+    : `${verb.prefix}${verb.stem}する`;
+}
+
+// What the お/ご + stem + になる/する pattern would produce for this verb,
+// regardless of whether it's actually irregular. Used to recognize the
+// specific mistake of applying the regular pattern to a verb that doesn't
+// take it — distinct from conjugate(), which never applies the pattern to
+// irregular verbs.
+export function regularPatternForm(
+  verb: VerbEntry,
+  target: HonorificTarget,
+): string | null {
   if (!verb.stem || !verb.prefix) return null;
   return target === "sonkeigo"
     ? `${verb.prefix}${verb.stem}になる`

@@ -1,3 +1,4 @@
+import { storageRepo } from "./storage/LocalStorageRepo";
 import { pushStatsDelta, pushStatsReset } from "./sync";
 
 export const STATS_STORAGE_KEY = "keigo-trainer-stats";
@@ -18,13 +19,8 @@ const EMPTY: Stats = {
 };
 
 export function loadStats(): Stats {
-  if (typeof window === "undefined") return EMPTY;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? { ...EMPTY, ...(JSON.parse(raw) as Stats) } : EMPTY;
-  } catch {
-    return EMPTY;
-  }
+  const stored = storageRepo.getItem<Stats>(STORAGE_KEY);
+  return stored ? { ...EMPTY, ...stored } : EMPTY;
 }
 
 export function recordAttempt(mode: StatsMode, correct: boolean): Stats {
@@ -33,12 +29,12 @@ export function recordAttempt(mode: StatsMode, correct: boolean): Stats {
     correct: stats[mode].correct + (correct ? 1 : 0),
     total: stats[mode].total + 1,
   };
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+  storageRepo.setItem(STORAGE_KEY, stats);
   void pushStatsDelta(mode, correct ? 1 : 0, 1);
   return stats;
 }
 
 export function resetStats(): void {
-  window.localStorage.removeItem(STORAGE_KEY);
+  storageRepo.removeItem(STORAGE_KEY);
   void pushStatsReset();
 }

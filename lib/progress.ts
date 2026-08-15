@@ -1,3 +1,4 @@
+import { storageRepo } from "./storage/LocalStorageRepo";
 import { conjugate, HonorificTarget, VERB_BANK, VerbEntry } from "./verbs";
 import { pushProgressDelta, pushProgressReset } from "./sync";
 
@@ -11,26 +12,20 @@ function questionKey(verbId: string, target: HonorificTarget): string {
 }
 
 export function loadProgress(): Progress {
-  if (typeof window === "undefined") return {};
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Progress) : {};
-  } catch {
-    return {};
-  }
+  return storageRepo.getItem<Progress>(STORAGE_KEY) ?? {};
 }
 
 export function recordMiss(verbId: string, target: HonorificTarget): Progress {
   const progress = loadProgress();
   const key = questionKey(verbId, target);
   progress[key] = (progress[key] ?? 0) + 1;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  storageRepo.setItem(STORAGE_KEY, progress);
   void pushProgressDelta(key, 1);
   return progress;
 }
 
 export function resetProgress(): void {
-  window.localStorage.removeItem(STORAGE_KEY);
+  storageRepo.removeItem(STORAGE_KEY);
   void pushProgressReset();
 }
 
