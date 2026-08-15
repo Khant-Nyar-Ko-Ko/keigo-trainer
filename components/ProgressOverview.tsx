@@ -40,7 +40,7 @@ function AccuracyCard({ label, stats, href }: { label: string; stats: ModeStats;
 }
 
 export default function ProgressOverview() {
-  const { lastSyncedAt } = useAuth();
+  const { status, lastSyncedAt } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [scenarioProgress, setScenarioProgress] = useState<ScenarioProgress | null>(null);
@@ -62,8 +62,23 @@ export default function ProgressOverview() {
 
   return (
     <div className="flex w-full max-w-5xl flex-col gap-6">
+      {status === "signed-out" && (
+        <div className="flex flex-col items-center justify-between gap-3 border border-line bg-paper-raised p-4 text-center sm:flex-row sm:text-left">
+          <p className="text-sm text-ink-soft">
+            This progress lives only on this device.{" "}
+            <span className="text-ink-faint">Sign in to sync it across devices.</span>
+          </p>
+          <Link
+            href="/login"
+            className="shrink-0 border border-line-strong px-3 py-1.5 text-xs text-ink-soft hover:border-accent hover:text-accent"
+          >
+            Sign in →
+          </Link>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <AccuracyCard label="Verb drills" stats={stats.drills} href="/" />
+        <AccuracyCard label="Verb drills" stats={stats.drills} href="/drills" />
         <AccuracyCard label="Scenario practice" stats={stats.scenarios} href="/scenarios" />
       </div>
 

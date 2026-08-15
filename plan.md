@@ -19,15 +19,15 @@ A hosted Japanese 敬語 (keigo) study app for any learner, not just its author.
 | LLM cost model | I cover it. Claude Haiku 4.5 (not Opus 5 — ~5x cheaper, plenty capable for short explanations), fired only as a fallback, with a per-learner daily cap |
 | Core differentiator | Hand-authored scenario/judgment bank + decision-tree reasoning framework — zero marginal cost, teaches what other tools don't |
 
-## Current state (Phase 0 + Phase 1 — done)
+## Current state (Phase 0–3 — done; Phase 5 partial)
 
 **Phase 0 — verb drills:**
-- Deterministic verb bank (29 verbs: 15 irregular + 14 regular-pattern) — [`lib/verbs.ts`](lib/verbs.ts)
+- Deterministic verb bank (30 verbs: 16 irregular + 14 regular-pattern) — [`lib/verbs.ts`](lib/verbs.ts)
 - Conjugator applying irregular lookups or the お/ご+stem pattern — same file
 - Grading with normalization/variant tolerance — [`lib/grade.ts`](lib/grade.ts)
 - Leitner-style weighted question picker (missed verbs surface more) via localStorage — [`lib/progress.ts`](lib/progress.ts)
-- Quiz UI — [`components/Quiz.tsx`](components/Quiz.tsx), route `/`
-- LLM explanation on wrong answers, currently *always* LLM-based (Claude Opus 5) — [`app/api/explain/route.ts`](app/api/explain/route.ts) — **superseded by Phase 2 below**
+- Quiz UI — [`components/Quiz.tsx`](components/Quiz.tsx), route `/drills`
+- LLM explanation on wrong answers — **superseded by Phase 2 below**
 
 **Phase 1 — the differentiator:**
 - Hand-authored scenario bank — [`lib/scenarios.ts`](lib/scenarios.ts), 17 scenarios across all 5 categories (pilot scope; scaling to 150–300 remains open work), each verified against the conjugator via `npm run verify:scenarios`
@@ -41,23 +41,27 @@ Verified end-to-end in the browser, light and dark mode, including the flip-case
 
 **Remaining Phase 1 work:** scaling the scenario bank from 17 pilot entries toward the 150–300 target.
 
-## Phase 2 — Tiered explain-on-miss
+**Phase 2 — tiered explain-on-miss:**
+- Chain-of-Responsibility diagnoser: free rule-based tier runs first, catching wrong-honorific-category answers and the regular pattern misapplied to an irregular verb, before anything reaches the paid tier — [`lib/diagnostics/DiagnosticHandler.ts`](lib/diagnostics/DiagnosticHandler.ts), [`lib/diagnostics/RuleBasedDiagnoser.ts`](lib/diagnostics/RuleBasedDiagnoser.ts)
+- Claude Haiku 4.5 fires only as the fallback when Tier 1 can't classify the mistake — [`lib/diagnostics/ClaudeHaikuDiagnoser.ts`](lib/diagnostics/ClaudeHaikuDiagnoser.ts), chained together in [`app/api/explain/route.ts`](app/api/explain/route.ts)
+- Per-learner daily cap (5/day) gates the fallback — [`lib/diagnostics/UsageCapGuard.ts`](lib/diagnostics/UsageCapGuard.ts), [`lib/diagnostics/explain-usage.ts`](lib/diagnostics/explain-usage.ts). **Still soft/localStorage-only** — the DB-backed hard cap planned below never shipped; a signed-in user can reset it by clearing site data, so it's open work if abuse becomes a real cost concern.
+- Storage abstracted behind a port (`StorageRepository` interface + `LocalStorageRepo` implementation) instead of calling `window.localStorage` directly — [`lib/storage/`](lib/storage/)
 
-Replace the current always-LLM explain route with a tiered diagnoser. Cuts LLM calls dramatically while improving precision on the cases it does cover.
+**Phase 3 — accounts + backend:**
+- Supabase email/magic-link auth, entirely optional — the app is fully usable signed-out — [`components/LoginForm.tsx`](components/LoginForm.tsx), [`app/login/page.tsx`](app/login/page.tsx), [`app/auth/confirm/route.ts`](app/auth/confirm/route.ts), [`components/AuthProvider.tsx`](components/AuthProvider.tsx)
+- Progress did **not** end up migrating off localStorage as originally planned — localStorage stays the source of truth the UI reads from, and Supabase is a sync layer on top: on sign-in, this device's local counts merge into the account once, then the account's counts pull down into local storage (repeats on every sign-in) — [`lib/sync.ts`](lib/sync.ts)
+- One `user_progress` row per user (progress/scenario-progress/stats as JSONB), RLS-scoped to `auth.uid()`, updated via atomic increment RPCs — [`supabase/migrations/0001_user_progress.sql`](supabase/migrations/0001_user_progress.sql)
+- This is the "claim your local progress" import mentioned below — it happens automatically on first sign-in per device, not as a separate flow
 
-- **Tier 1 (free, instant, code-only):** rule-based diagnoser using the existing deterministic conjugator —
-  - answer matches the *other* honorific category's correct form → "that's kenjougo, this question asked for sonkeigo"
-  - answer matches what the regular お+stem+になる/する pattern would produce, but the verb is irregular → "this verb has an irregular form; the regular pattern doesn't apply here"
-  - blank/no attempt → distinct message, no diagnosis needed
-- **Tier 2 (LLM fallback, capped):** only fires when Tier 1 can't classify the mistake. Claude Haiku 4.5, per-learner daily cap enforced (soft cap via localStorage pre-accounts, hard cap via the DB once Phase 3 lands)
+**Phase 5 (partial) — polish:**
+- Light/dark theme toggle — [`components/ThemeToggle.tsx`](components/ThemeToggle.tsx)
+- Export/reset progress from Settings — [`components/SettingsPanel.tsx`](components/SettingsPanel.tsx)
+- Mobile responsive pass: stationery-inspired design system, fixed top nav plus a bottom tab bar on mobile — [`components/AppNav.tsx`](components/AppNav.tsx), [`app/globals.css`](app/globals.css)
+- Basic progress dashboard: per-mode accuracy, weakest verbs/scenarios lists — [`components/ProgressOverview.tsx`](components/ProgressOverview.tsx), route `/progress`. Not yet deep-linkable into a focused drill session on a weak item — that piece is still open, see Phase 5 below.
 
-## Phase 3 — Accounts + backend
-
-Add Supabase (Postgres + Auth). Migrate progress from localStorage to per-user DB rows so it syncs across devices. This is also where the Tier-2 LLM daily cap becomes a real enforced limit instead of a soft client-side one.
-
-- Auth: email/magic-link or OAuth via Supabase Auth
-- Migrate `keigo-trainer-progress` (Leitner weights) and scenario-bank progress to Postgres, keyed by user
-- One-time "claim your local progress" import for anyone who used the app pre-accounts
+**Marketing/UX restructuring:**
+- `/` is now a dedicated landing page (Hero → feature cards linking to all 5 modes → FAQ) instead of doubling as the verb-drills page; drills moved to their own route — [`app/page.tsx`](app/page.tsx), [`app/drills/page.tsx`](app/drills/page.tsx), [`components/HomeFeatures.tsx`](components/HomeFeatures.tsx), [`components/HomeFaq.tsx`](components/HomeFaq.tsx)
+- `/progress` shows a non-blocking "sign in to sync across devices" banner when signed out, rather than gating the page behind auth — the local-first design means progress is fully viewable as a guest — [`components/ProgressOverview.tsx`](components/ProgressOverview.tsx)
 
 ## Phase 4 — Free feature layer
 
@@ -73,16 +77,13 @@ All zero marginal cost, all reinforce retention without touching the LLM budget.
 ## Phase 5 — Gamification & polish
 
 - Streaks, daily goals, levels/badges (opt-in leaderboards/friend comparisons — not everyone wants competitive pressure)
-- Progress dashboard: per-verb and per-scenario-category accuracy, weakest areas, deep-linkable into focused drill sessions
-- Mobile responsive pass
-- Light/dark theme toggle (dark mode already works via Tailwind's `dark:` variants; no explicit toggle yet)
-- Export/reset progress from Settings
+- Make the weakest-verbs/weakest-scenarios lists on `/progress` deep-linkable into a focused drill session on just those items, instead of a static list
 
 ## Data model notes
 
 - **Verb bank / scenario bank**: static TS/JSON data, no reason to move into a database — this is authored content, not per-user state
-- **Progress**: localStorage through Phase 2, migrates to Supabase Postgres in Phase 3 (per-user rows, keyed by auth user ID)
-- **LLM usage tracking** (for the Tier-2 daily cap): soft-tracked in localStorage pre-accounts, hard-tracked in Postgres post-Phase 3
+- **Progress**: localStorage is the durable source of truth the UI reads from. Supabase Postgres (`user_progress`, one row per user) is an optional sync layer that activates on sign-in — merge-then-pull, not a migration off localStorage. See [`lib/sync.ts`](lib/sync.ts).
+- **LLM usage tracking** (for the Tier-2 daily cap): still soft-tracked in localStorage only ([`lib/diagnostics/explain-usage.ts`](lib/diagnostics/explain-usage.ts)) — a DB-backed per-account hard cap was planned but hasn't shipped; open work if abuse becomes a real cost concern
 
 ## Not planned (explicitly out of scope unless you ask)
 
