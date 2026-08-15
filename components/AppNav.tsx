@@ -8,7 +8,7 @@ import ThemeToggle from "./ThemeToggle";
 import UserGuideModal from "./UserGuideModal";
 
 const LINKS = [
-  { href: "/", label: "Verb Drills", short: "Drills", icon: Zap },
+  { href: "/drills", label: "Verb Drills", short: "Drills", icon: Zap },
   { href: "/scenarios", label: "Scenario Practice", short: "Scenarios", icon: Target },
   { href: "/diagnostic", label: "Decision Diagnostic", short: "Diagnostic", icon: GitBranch },
   { href: "/notes", label: "Nuance Notes", short: "Notes", icon: BookOpen },

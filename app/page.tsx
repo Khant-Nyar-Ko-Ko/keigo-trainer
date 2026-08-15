@@ -1,18 +1,13 @@
-import HomeIntro from "@/components/HomeIntro";
-import Quiz from "@/components/Quiz";
-import WelcomeBanner from "@/components/WelcomeBanner";
+import Hero from "@/components/Hero";
+import HomeFaq from "@/components/HomeFaq";
+import HomeFeatures from "@/components/HomeFeatures";
 
 export default function Home() {
   return (
     <div className="flex flex-col items-center bg-paper">
-      <HomeIntro />
-      <div
-        id="practice"
-        className="flex w-full scroll-mt-24 flex-col items-center px-4 py-16"
-      >
-        <WelcomeBanner />
-        <Quiz />
-      </div>
+      <Hero />
+      <HomeFeatures />
+      <HomeFaq />
     </div>
   );
 }
