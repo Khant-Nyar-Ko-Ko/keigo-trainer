@@ -60,9 +60,9 @@ export default function ScenarioPractice() {
   const verb = scenarioVerb(scenario);
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-6">
+    <div className="flex flex-col w-full max-w-lg gap-6">
       {!sessionComplete && (
-        <div className="text-right text-sm text-ink-faint">
+        <div className="text-sm text-right text-ink-faint">
           {stats.correct} / {stats.total} correct
         </div>
       )}
@@ -71,12 +71,12 @@ export default function ScenarioPractice() {
         <div
           role="status"
           aria-live="polite"
-          className="flex flex-col items-center gap-4 border border-line bg-paper-raised p-8 text-center"
+          className="flex flex-col items-center gap-4 p-8 text-center border border-line bg-paper-raised"
         >
-          <span className="text-xs font-semibold uppercase tracking-wide text-red">
+          <span className="text-xs font-semibold tracking-wide uppercase text-accent">
             Session complete
           </span>
-          <div className="font-display text-4xl">
+          <div className="text-4xl font-display">
             {stats.correct} / {stats.total}
           </div>
           <p className="text-sm text-ink-soft">
@@ -85,13 +85,13 @@ export default function ScenarioPractice() {
           <div className="flex gap-3">
             <button
               onClick={handleContinue}
-              className="bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-red-deep"
+              className="px-4 py-2 text-sm font-medium bg-ink text-paper hover:bg-accent-deep"
             >
               Keep going
             </button>
             <Link
               href="/progress"
-              className="border border-line-strong px-4 py-2 text-sm hover:bg-paper-sunken"
+              className="px-4 py-2 text-sm border border-line-strong hover:bg-paper-sunken"
             >
               View progress
             </Link>
@@ -99,14 +99,14 @@ export default function ScenarioPractice() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-3 border border-line bg-paper-raised p-6">
-            <span className="text-xs font-semibold uppercase tracking-wide text-red">
+          <div className="flex flex-col gap-3 p-6 border border-line bg-paper-raised">
+            <span className="text-xs font-semibold tracking-wide uppercase text-accent">
               {CATEGORY_LABEL[scenario.category]}
             </span>
             <p className="text-ink-soft">{scenario.setting}</p>
             <p className="text-sm text-ink-faint">Other party: {scenario.otherParty}</p>
             <p className="font-semibold text-ink">{scenario.promptCue}</p>
-            <div className="mt-1 flex items-baseline gap-2 text-lg">
+            <div className="flex items-baseline gap-2 mt-1 text-lg">
               <span lang="ja" className="font-display">
                 {verb.dictionaryForm}
               </span>
@@ -124,12 +124,12 @@ export default function ScenarioPractice() {
               disabled={!!result}
               placeholder="Which register — and what's the form?"
               autoFocus
-              className="border border-line-strong bg-paper px-4 py-3 text-lg text-ink outline-none focus:border-red disabled:opacity-60"
+              className="px-4 py-3 text-lg border outline-none border-line-strong bg-paper text-ink focus:border-accent disabled:opacity-60"
             />
             {!result && (
               <button
                 type="submit"
-                className="bg-ink px-4 py-3 font-medium text-paper hover:bg-red-deep"
+                className="px-4 py-3 font-medium bg-ink text-paper hover:bg-accent-deep"
               >
                 Check
               </button>
@@ -140,9 +140,8 @@ export default function ScenarioPractice() {
             <div
               role="status"
               aria-live="polite"
-              className={`flex flex-col gap-3 border p-4 ${
-                result.correct ? "border-green bg-green-soft" : "border-red bg-red-soft"
-              }`}
+              className={`flex flex-col gap-3 border p-4 ${result.correct ? "border-success bg-success-soft" : "border-accent bg-accent-soft"
+                }`}
             >
               <div className="font-semibold">
                 {result.correct
@@ -158,17 +157,17 @@ export default function ScenarioPractice() {
                 </span>{" "}
                 (<span lang="ja">{TARGET_LABEL[scenario.targetRegister]}</span>)
               </div>
-              <div className="bg-paper-raised p-3 text-sm text-ink-soft">
+              <div className="p-3 text-sm bg-paper-raised text-ink-soft">
                 {scenario.explanation}
                 {scenario.flipCase && (
-                  <div className="mt-2 text-xs font-semibold uppercase tracking-wide text-red">
+                  <div className="mt-2 text-xs font-semibold tracking-wide uppercase text-accent">
                     Classic uchi/soto gotcha — worth remembering.
                   </div>
                 )}
               </div>
               <button
                 onClick={handleNext}
-                className="self-start bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-red-deep"
+                className="self-start px-4 py-2 text-sm font-medium bg-ink text-paper hover:bg-accent-deep"
               >
                 Next scenario
               </button>

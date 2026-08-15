@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  canRequestExplanation,
+  recordExplanationUsed,
+} from "@/lib/diagnostics/explain-usage";
 import { GradeResult, gradeAnswer } from "@/lib/grade";
 import { Question, loadProgress, pickQuestion, recordMiss } from "@/lib/progress";
 import { recordAttempt } from "@/lib/stats";
@@ -47,17 +51,18 @@ export default function Quiz() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          dictionaryForm: question.verb.dictionaryForm,
-          meaning: question.verb.meaning,
+          verbId: question.verb.id,
           target: question.target,
           userAnswer: input,
           correctAnswer: result.canonicalAnswer,
+          aiFallbackAllowed: canRequestExplanation(),
         }),
       });
       if (!res.ok) throw new Error(`Request failed (${res.status})`);
       const data = await res.json();
       if (!data.explanation) throw new Error("Empty response");
       setExplanation(data.explanation);
+      if (data.tier === "ai") recordExplanationUsed();
     } catch {
       setExplanationError("Couldn't load an explanation. Try again?");
     } finally {
@@ -93,9 +98,9 @@ export default function Quiz() {
   }
 
   return (
-    <div className="flex w-full max-w-md flex-col gap-6">
+    <div className="flex flex-col w-full max-w-md gap-6">
       {!sessionComplete && (
-        <div className="text-right text-sm text-ink-faint">
+        <div className="text-sm text-right text-ink-faint">
           {stats.correct} / {stats.total} correct
         </div>
       )}
@@ -104,12 +109,12 @@ export default function Quiz() {
         <div
           role="status"
           aria-live="polite"
-          className="flex flex-col items-center gap-4 border border-line bg-paper-raised p-8 text-center"
+          className="flex flex-col items-center gap-4 p-8 text-center border border-line bg-paper-raised"
         >
-          <span className="text-xs font-semibold uppercase tracking-wide text-red">
+          <span className="text-xs font-semibold tracking-wide uppercase text-accent">
             Session complete
           </span>
-          <div className="font-display text-4xl">
+          <div className="text-4xl font-display">
             {stats.correct} / {stats.total}
           </div>
           <p className="text-sm text-ink-soft">
@@ -118,13 +123,13 @@ export default function Quiz() {
           <div className="flex gap-3">
             <button
               onClick={handleContinue}
-              className="bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-red-deep"
+              className="px-4 py-2 text-sm font-medium bg-ink text-paper hover:bg-accent-deep"
             >
               Keep going
             </button>
             <Link
               href="/progress"
-              className="border border-line-strong px-4 py-2 text-sm hover:bg-paper-sunken"
+              className="px-4 py-2 text-sm border border-line-strong hover:bg-paper-sunken"
             >
               View progress
             </Link>
@@ -132,9 +137,9 @@ export default function Quiz() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col items-center gap-2 border border-line bg-paper-raised p-8 text-center">
+          <div className="flex flex-col items-center gap-2 p-8 text-center border border-line bg-paper-raised">
             <RegisterScale target={question.target} />
-            <div lang="ja" className="mt-2 font-display text-4xl">
+            <div lang="ja" className="mt-2 text-4xl font-display">
               {question.verb.dictionaryForm}
             </div>
             <div className="text-ink-faint">
@@ -150,12 +155,12 @@ export default function Quiz() {
               disabled={!!result}
               placeholder="Type the converted form..."
               autoFocus
-              className="border border-line-strong bg-paper px-4 py-3 text-lg text-ink outline-none focus:border-red disabled:opacity-60"
+              className="px-4 py-3 text-lg border outline-none border-line-strong bg-paper text-ink focus:border-accent disabled:opacity-60"
             />
             {!result && (
               <button
                 type="submit"
-                className="bg-ink px-4 py-3 font-medium text-paper hover:bg-red-deep"
+                className="px-4 py-3 font-medium bg-ink text-paper hover:bg-accent-deep"
               >
                 Check
               </button>
@@ -166,9 +171,8 @@ export default function Quiz() {
             <div
               role="status"
               aria-live="polite"
-              className={`flex flex-col gap-3 border p-4 ${
-                result.correct ? "border-green bg-green-soft" : "border-red bg-red-soft"
-              }`}
+              className={`flex flex-col gap-3 border p-4 ${result.correct ? "border-success bg-success-soft" : "border-accent bg-accent-soft"
+                }`}
             >
               <div className="font-semibold">{result.correct ? "Correct!" : "Not quite."}</div>
               <div className="text-sm text-ink-soft">
@@ -194,16 +198,16 @@ export default function Quiz() {
               )}
 
               {explanationError && !explanation && (
-                <div className="text-xs text-red">{explanationError}</div>
+                <div className="text-xs text-accent">{explanationError}</div>
               )}
 
               {explanation && (
-                <div className="bg-paper-raised p-3 text-sm text-ink-soft">{explanation}</div>
+                <div className="p-3 text-sm bg-paper-raised text-ink-soft">{explanation}</div>
               )}
 
               <button
                 onClick={handleNext}
-                className="self-start bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-red-deep"
+                className="self-start px-4 py-2 text-sm font-medium bg-ink text-paper hover:bg-accent-deep"
               >
                 Next question
               </button>

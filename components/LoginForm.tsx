@@ -29,7 +29,7 @@ export default function LoginForm() {
 
   if (!isSupabaseConfigured) {
     return (
-      <div className="w-full max-w-sm border border-line bg-paper-raised p-6 text-sm text-ink-soft">
+      <div className="w-full max-w-sm p-6 text-sm border border-line bg-paper-raised text-ink-soft">
         Sign-in isn&apos;t configured for this deployment yet.
       </div>
     );
@@ -62,10 +62,10 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="flex w-full max-w-sm flex-col gap-4">
+    <div className="flex flex-col w-full max-w-sm gap-4">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-3 border border-line bg-paper-raised p-8"
+        className="flex flex-col gap-3 p-8 border border-line bg-paper-raised"
       >
         <label htmlFor="email" className="text-sm font-semibold text-ink">
           Email
@@ -79,13 +79,13 @@ export default function LoginForm() {
           disabled={status === "sending" || status === "sent"}
           placeholder="you@example.com"
           autoFocus
-          className="border border-line-strong bg-paper px-4 py-3 text-lg text-ink outline-none focus:border-red disabled:opacity-60"
+          className="px-4 py-3 text-lg border outline-none border-line-strong bg-paper text-ink focus:border-accent disabled:opacity-60"
         />
         {status !== "sent" && (
           <button
             type="submit"
             disabled={status === "sending"}
-            className="bg-ink px-4 py-3 font-medium text-paper hover:bg-red-deep disabled:opacity-60"
+            className="px-4 py-3 font-medium bg-ink text-paper hover:bg-accent-deep disabled:opacity-60"
           >
             {status === "sending" ? "Sending..." : "Send sign-in link"}
           </button>
@@ -96,7 +96,7 @@ export default function LoginForm() {
         <div
           role="status"
           aria-live="polite"
-          className="border border-green bg-green-soft p-4 text-sm text-ink-soft"
+          className="p-4 text-sm border border-success bg-success-soft text-ink-soft"
         >
           Check <span className="font-semibold text-ink">{email}</span> for a sign-in link.
         </div>
@@ -106,7 +106,7 @@ export default function LoginForm() {
         <div
           role="status"
           aria-live="polite"
-          className="border border-red bg-red-soft p-4 text-sm text-ink-soft"
+          className="p-4 text-sm border border-accent bg-accent-soft text-ink-soft"
         >
           {message}
         </div>

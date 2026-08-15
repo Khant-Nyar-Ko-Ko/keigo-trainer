@@ -19,7 +19,7 @@ function randomVerbForRegister(target: "sonkeigo" | "kenjougo"): VerbEntry {
 }
 
 const OPTION_CLASS =
-  "border border-line-strong bg-paper px-4 py-3 text-left text-sm hover:border-red hover:bg-red-soft";
+  "border border-line-strong bg-paper px-4 py-3 text-left text-sm hover:border-accent hover:bg-accent-soft";
 
 export default function DecisionTree() {
   const [path, setPath] = useState<DecisionPath>({});
@@ -56,19 +56,19 @@ export default function DecisionTree() {
   }
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-6">
+    <div className="flex flex-col w-full max-w-lg gap-6">
       {path.actor && (
         <div className="flex flex-wrap gap-2 text-xs text-ink-faint">
-          <span className="border border-line px-2 py-1">
+          <span className="px-2 py-1 border border-line">
             {path.actor === "self" ? "My own action" : "Someone else's action"}
           </span>
           {path.addressee && (
-            <span className="border border-line px-2 py-1">
+            <span className="px-2 py-1 border border-line">
               {path.addressee === "direct" ? "Speaking to them directly" : "Describing to a third party"}
             </span>
           )}
           {path.group && (
-            <span className="border border-line px-2 py-1">
+            <span className="px-2 py-1 border border-line">
               {path.group === "own-group" ? "Part of my own group" : "Outside my group"}
             </span>
           )}
@@ -117,25 +117,33 @@ export default function DecisionTree() {
       )}
 
       {step === "result" && register && verb && (
-        <div className="flex flex-col gap-4 border border-line bg-paper-raised p-6">
+        <div className="flex flex-col gap-4 p-6 border border-line bg-paper-raised">
           <div className="flex items-center gap-3">
             <RegisterScale target={register} />
-            <span lang="ja" className="font-semibold text-ink">
+            <span
+              lang="ja"
+              className={`font-semibold ${register === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"
+                }`}
+            >
               {register === "sonkeigo" ? "尊敬語" : "謙譲語"}
             </span>
           </div>
           <p className="text-sm text-ink-soft">{explainPath(path)}</p>
-          <div className="border-t border-line pt-4">
-            <p className="mb-1 text-xs uppercase tracking-wide text-ink-faint">Example</p>
+          <div className="pt-4 border-t border-line">
+            <p className="mb-1 text-xs tracking-wide uppercase text-ink-faint">Example</p>
             <div className="flex items-baseline gap-2">
-              <span lang="ja" className="font-display text-2xl">
+              <span lang="ja" className="text-2xl font-display">
                 {verb.dictionaryForm}
               </span>
               <span className="text-sm text-ink-faint">
                 <span lang="ja">{verb.reading}</span> — {verb.meaning}
               </span>
             </div>
-            <div lang="ja" className="mt-1 font-display text-xl text-red">
+            <div
+              lang="ja"
+              className={`mt-1 font-display text-xl ${register === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"
+                }`}
+            >
               {conjugate(verb, register)}
             </div>
           </div>
@@ -147,7 +155,7 @@ export default function DecisionTree() {
               Another example
             </button>
             <button
-              className="bg-ink px-3 py-1.5 text-sm font-medium text-paper hover:bg-red-deep"
+              className="bg-ink px-3 py-1.5 text-sm font-medium text-paper hover:bg-accent-deep"
               onClick={reset}
             >
               Start over
