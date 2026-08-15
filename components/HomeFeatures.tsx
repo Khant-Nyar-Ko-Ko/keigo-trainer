@@ -1,5 +1,6 @@
 import { BookOpen, GitBranch, Target, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
+import Stamp from "./Stamp";
 
 const FEATURES = [
   {
@@ -43,7 +44,8 @@ export default function HomeFeatures() {
   return (
     <section className="w-full border-t border-line bg-paper-raised">
       <div className="flex flex-col w-full max-w-5xl gap-8 px-4 py-16 mx-auto sm:py-20">
-        <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Stamp kanji="型" />
           <span className="text-xs font-semibold tracking-wide uppercase text-ink-faint">
             How it works
           </span>
@@ -58,7 +60,9 @@ export default function HomeFeatures() {
               href={href}
               className="flex flex-col gap-3 p-6 border group border-line bg-paper hover:border-accent"
             >
-              <Icon size={20} className="text-accent" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-line-strong text-accent group-hover:border-accent">
+                <Icon size={16} />
+              </span>
               <span className="text-lg font-semibold font-display text-ink">{title}</span>
               <p className="text-sm text-ink-soft">{description}</p>
               <span className="mt-auto text-xs text-accent group-hover:text-accent-deep">
