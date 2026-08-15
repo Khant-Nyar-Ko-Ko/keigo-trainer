@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircle2, MessageSquareQuote, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ScenarioGradeResult, gradeScenarioAnswer } from "@/lib/scenario-grade";
@@ -9,6 +10,13 @@ import { recordAttempt } from "@/lib/stats";
 import { TARGET_LABEL } from "@/lib/verbs";
 
 const SESSION_LENGTH = 10;
+
+function actorLabel(scenario: Scenario): string {
+  return scenario.actorIsSelf ? "You" : scenario.otherParty;
+}
+function actorIsUchi(scenario: Scenario): boolean {
+  return scenario.actorIsSelf || scenario.targetRegister === "kenjougo";
+}
 
 export default function ScenarioPractice() {
   const [scenario, setScenario] = useState<Scenario | null>(null);
@@ -58,12 +66,25 @@ export default function ScenarioPractice() {
   }
 
   const verb = scenarioVerb(scenario);
+  const uchi = actorIsUchi(scenario);
+
+  const resultTone =
+    result?.mistakeType === "correct"
+      ? "correct"
+      : result?.mistakeType === "wrong-register"
+        ? "partial"
+        : "incorrect";
 
   return (
-    <div className="flex flex-col w-full max-w-lg gap-6">
+    <div className="flex flex-col w-full max-w-2xl gap-6">
       {!sessionComplete && (
-        <div className="text-sm text-right text-ink-faint">
-          {stats.correct} / {stats.total} correct
+        <div className="flex items-center justify-between px-4 py-2 border border-line bg-paper-raised">
+          <span className="text-xs tracking-wide uppercase text-ink-faint">
+            Scenario {stats.total + 1} of {SESSION_LENGTH}
+          </span>
+          <span className="text-sm font-semibold text-ink">
+            {stats.correct} / {stats.total} correct
+          </span>
         </div>
       )}
 
@@ -73,7 +94,7 @@ export default function ScenarioPractice() {
           aria-live="polite"
           className="flex flex-col items-center gap-4 p-8 text-center border border-line bg-paper-raised"
         >
-          <span className="text-xs font-semibold tracking-wide uppercase text-accent">
+          <span className="text-xs font-semibold tracking-wide uppercase text-ink-faint">
             Session complete
           </span>
           <div className="text-4xl font-display">
@@ -99,15 +120,55 @@ export default function ScenarioPractice() {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-3 p-6 border border-line bg-paper-raised">
-            <span className="text-xs font-semibold tracking-wide uppercase text-accent">
-              {CATEGORY_LABEL[scenario.category]}
-            </span>
+          <div className="flex flex-col gap-5 p-6 border border-line bg-paper-raised sm:p-8">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-xs font-semibold tracking-wide uppercase text-ink-faint">
+                {CATEGORY_LABEL[scenario.category]}
+              </span>
+              {scenario.flipCase && (
+                <span className="border border-partial px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-partial">
+                  Uchi/soto flip
+                </span>
+              )}
+            </div>
+
             <p className="text-ink-soft">{scenario.setting}</p>
-            <p className="text-sm text-ink-faint">Other party: {scenario.otherParty}</p>
+
+            <div className="flex items-stretch gap-3 py-4 border-y border-line">
+              <div className="flex flex-col flex-1 gap-1">
+                <span className="text-[11px] uppercase tracking-wide text-ink-faint">Actor</span>
+                <span className="text-sm font-semibold text-ink">{actorLabel(scenario)}</span>
+              </div>
+              <div className="flex flex-col items-center justify-center gap-1 px-2">
+                <span
+                  className={`whitespace-nowrap border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${uchi
+                    ? "border-kenjougo text-kenjougo"
+                    : "border-sonkeigo text-sonkeigo"
+                    }`}
+                >
+                  {uchi ? "uchi — in-group" : "soto — out-group"}
+                </span>
+                <span aria-hidden="true" className="text-ink-faint">
+                  →
+                </span>
+              </div>
+              <div className="flex flex-col flex-1 gap-1 text-right">
+                <span className="text-[11px] uppercase tracking-wide text-ink-faint">
+                  Register
+                </span>
+                <span
+                  lang="ja"
+                  className={`text-sm font-semibold ${scenario.targetRegister === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"
+                    }`}
+                >
+                  {TARGET_LABEL[scenario.targetRegister]}
+                </span>
+              </div>
+            </div>
+
             <p className="font-semibold text-ink">{scenario.promptCue}</p>
-            <div className="flex items-baseline gap-2 mt-1 text-lg">
-              <span lang="ja" className="font-display">
+            <div className="flex items-baseline gap-2">
+              <span lang="ja" className="text-2xl font-display">
                 {verb.dictionaryForm}
               </span>
               <span className="text-sm text-ink-faint">
@@ -124,7 +185,7 @@ export default function ScenarioPractice() {
               disabled={!!result}
               placeholder="Which register — and what's the form?"
               autoFocus
-              className="px-4 py-3 text-lg border outline-none border-line-strong bg-paper text-ink focus:border-accent disabled:opacity-60"
+              className="px-4 py-4 text-xl border outline-none border-line-strong bg-paper font-display text-ink shadow-low focus:border-accent disabled:opacity-60"
             />
             {!result && (
               <button
@@ -140,13 +201,25 @@ export default function ScenarioPractice() {
             <div
               role="status"
               aria-live="polite"
-              className={`flex flex-col gap-3 border p-4 ${result.correct ? "border-success bg-success-soft" : "border-accent bg-accent-soft"
+              className={`flex animate-[fade-in-up_0.2s_ease-out] flex-col gap-4 border p-5 ${resultTone === "correct"
+                ? "border-correct bg-correct-soft"
+                : resultTone === "partial"
+                  ? "border-partial bg-partial-soft"
+                  : "border-incorrect bg-incorrect-soft"
                 }`}
             >
-              <div className="font-semibold">
-                {result.correct
+              <div className="flex items-center gap-2 font-semibold">
+                {resultTone === "correct" ? (
+                  <CheckCircle2 size={18} className="text-correct" />
+                ) : (
+                  <XCircle
+                    size={18}
+                    className={resultTone === "partial" ? "text-partial" : "text-incorrect"}
+                  />
+                )}
+                {resultTone === "correct"
                   ? "Correct!"
-                  : result.mistakeType === "wrong-register"
+                  : resultTone === "partial"
                     ? "Wrong register — the conjugation itself was fine."
                     : "Not quite."}
               </div>
@@ -157,14 +230,12 @@ export default function ScenarioPractice() {
                 </span>{" "}
                 (<span lang="ja">{TARGET_LABEL[scenario.targetRegister]}</span>)
               </div>
-              <div className="p-3 text-sm bg-paper-raised text-ink-soft">
-                {scenario.explanation}
-                {scenario.flipCase && (
-                  <div className="mt-2 text-xs font-semibold tracking-wide uppercase text-accent">
-                    Classic uchi/soto gotcha — worth remembering.
-                  </div>
-                )}
+
+              <div className="flex gap-3 p-4 text-sm border-t border-line/60 bg-paper-raised text-ink-soft">
+                <MessageSquareQuote size={16} className="mt-0.5 shrink-0 text-ink-faint" />
+                <p>{scenario.explanation}</p>
               </div>
+
               <button
                 onClick={handleNext}
                 className="self-start px-4 py-2 text-sm font-medium bg-ink text-paper hover:bg-accent-deep"

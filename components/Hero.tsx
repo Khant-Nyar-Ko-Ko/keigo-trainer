@@ -9,7 +9,7 @@ export default function Hero() {
           <span className="border border-line-strong px-3 py-1 text-xs uppercase tracking-wide text-ink-soft">
             Judgment-First Keigo
           </span>
-          <h1 className="font-heading text-4xl font-bold leading-[1.05] text-ink sm:text-5xl lg:text-6xl">
+          <h1 className="font-display text-4xl font-semibold leading-[1.05] text-ink sm:text-5xl lg:text-6xl">
             Judgment first.
             <br />
             Conjugation second.

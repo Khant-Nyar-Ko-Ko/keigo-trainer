@@ -3,10 +3,24 @@
 import { useState } from "react";
 import { HonorificTarget } from "@/lib/verbs";
 
+type ScalePoint = "sonkeigo" | "kenjougo" | "teineigo" | "plain";
+
+const POINT_STYLES: Record<ScalePoint, { dot: string; text: string }> = {
+  sonkeigo: { dot: "bg-sonkeigo", text: "text-sonkeigo" },
+  kenjougo: { dot: "bg-kenjougo", text: "text-kenjougo" },
+  teineigo: { dot: "bg-teineigo", text: "text-teineigo" },
+  plain: { dot: "bg-plain", text: "text-plain" },
+};
+
+const POINTS: { id: ScalePoint; label: string }[] = [
+  { id: "sonkeigo", label: "尊敬語" },
+  { id: "kenjougo", label: "謙譲語" },
+  { id: "teineigo", label: "丁寧語" },
+  { id: "plain", label: "plain" },
+];
+
 export default function RegisterScale({ target }: { target: HonorificTarget }) {
   const [open, setOpen] = useState(false);
-  const isTop = target === "sonkeigo";
-  const dotColor = isTop ? "bg-sonkeigo" : "bg-kenjougo";
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -14,35 +28,62 @@ export default function RegisterScale({ target }: { target: HonorificTarget }) {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        aria-label="What's the difference between sonkeigo and kenjougo?"
-        className="inline-flex items-center gap-1.5"
+        aria-label="What do these registers mean?"
+        className="inline-flex items-center gap-3 p-1 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
-        <span className="relative h-8 w-0.75 bg-line-strong">
-          <span
-            className={`absolute left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full ${dotColor}`}
-            style={{ top: isTop ? "0%" : "100%" }}
-          />
+        <span className="relative block w-px h-24 bg-line-strong" aria-hidden="true">
+          {POINTS.map((point, i) => {
+            const active = point.id === target;
+            return (
+              <span
+                key={point.id}
+                className={`absolute left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-all ${active ? `h-3 w-3 ${POINT_STYLES[point.id].dot}` : "h-1.5 w-1.5 bg-line-strong"
+                  }`}
+                style={{ top: `${(i / (POINTS.length - 1)) * 100}%` }}
+              />
+            );
+          })}
         </span>
-        <span
-          lang="ja"
-          className="flex h-8 flex-col justify-between text-[10px] tracking-wide text-ink-faint"
-        >
-          <span className={isTop ? "font-semibold text-sonkeigo" : undefined}>尊敬語</span>
-          <span className={!isTop ? "font-semibold text-kenjougo" : undefined}>謙譲語</span>
+        <span className="flex h-24 flex-col justify-between py-0.5 text-left">
+          {POINTS.map((point) => {
+            const active = point.id === target;
+            return (
+              <span
+                key={point.id}
+                lang={point.id === "plain" ? undefined : "ja"}
+                className={
+                  active
+                    ? `text-sm font-semibold ${POINT_STYLES[point.id].text}`
+                    : "text-xs text-ink-faint"
+                }
+              >
+                {point.label}
+              </span>
+            );
+          })}
         </span>
-        <span className="flex h-4 w-4 items-center justify-center rounded-full border border-line-strong text-[10px] leading-none text-ink-faint">
+        <span className="flex items-center justify-center w-5 h-5 text-xs leading-none border rounded-full border-line-strong text-ink-faint">
           ?
         </span>
       </button>
       {open && (
-        <div className="p-3 text-xs leading-relaxed text-left border max-w-55 border-line bg-paper-sunken text-ink-soft">
+        <div className="p-4 text-xs leading-relaxed text-left border max-w-72 border-line bg-paper-sunken text-ink-soft shadow-low">
           <p>
-            <span lang="ja" className="font-semibold text-sonkeigo">尊敬語</span> elevates the other
-            person&apos;s action — use it for what <em>they</em> do.
+            <span lang="ja" className="font-semibold text-sonkeigo">
+              尊敬語
+            </span>{" "}
+            elevates the other person&apos;s action — use it for what <em>they</em> do.
           </p>
-          <p className="mt-1.5">
-            <span lang="ja" className="font-semibold text-kenjougo">謙譲語</span> humbles your own action —
-            use it for what <em>you</em> do toward someone you&apos;re showing respect to.
+          <p className="mt-2">
+            <span lang="ja" className="font-semibold text-kenjougo">
+              謙譲語
+            </span>{" "}
+            humbles your own action — use it for what <em>you</em> do toward someone
+            you&apos;re showing respect to.
+          </p>
+          <p className="mt-2 text-ink-faint">
+            <span lang="ja">丁寧語</span> is baseline politeness underneath both; the plain
+            form is unmarked, dictionary-form speech.
           </p>
         </div>
       )}
