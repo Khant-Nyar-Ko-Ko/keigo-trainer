@@ -1,5 +1,4 @@
 import Link from "next/link";
-import RegisterScale from "./RegisterScale";
 
 export default function Hero() {
   return (
@@ -36,25 +35,49 @@ export default function Hero() {
         </div>
 
         <div className="flex items-center justify-center">
-          <div className="w-full max-w-sm p-8 border border-line bg-paper-raised">
-            <span className="text-xs font-semibold tracking-wide uppercase text-ink-faint">
-              Example
-            </span>
-            <div className="flex items-center gap-4 mt-4">
-              <RegisterScale target="sonkeigo" />
-              <div>
-                <p className="text-xs text-ink-faint">plain form</p>
-                <p lang="ja" className="text-2xl font-display text-ink">
-                  話す
+          <div className="w-full max-w-sm p-8 border border-line bg-paper-raised shadow-high">
+            <div className="text-center">
+              <p lang="ja" className="text-3xl font-display text-ink">
+                言う
+              </p>
+              <p className="mt-1 text-xs text-ink-faint">
+                iu — the plain form, before any audience is decided
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-3 pt-5 mt-6 border-t border-line-strong">
+              <div className="border border-line px-3 py-2.5 text-center">
+                <p lang="ja" className="text-lg font-display text-teineigo">
+                  言います
+                </p>
+                <p className="mt-1 text-[11px] uppercase tracking-wide text-teineigo">
+                  丁寧語 · baseline
+                </p>
+                <p className="mt-0.5 text-[11px] text-ink-faint">
+                  Polite to anyone, elevates no one
                 </p>
               </div>
-            </div>
-            <div className="h-px my-5 bg-line" />
-            <div>
-              <p className="text-xs text-ink-faint">尊敬語 — elevate their action</p>
-              <p lang="ja" className="text-3xl font-display text-sonkeigo">
-                お話しになる
-              </p>
+              <div className="border border-line px-3 py-2.5 text-center">
+                <p lang="ja" className="text-lg font-display text-sonkeigo">
+                  おっしゃる
+                </p>
+                <p className="mt-1 text-[11px] uppercase tracking-wide text-sonkeigo">
+                  尊敬語 · elevate
+                </p>
+                <p className="mt-0.5 text-[11px] text-ink-faint">
+                  When someone senior is speaking
+                </p>
+              </div>
+              <div className="border border-line px-3 py-2.5 text-center">
+                <p lang="ja" className="text-lg font-display text-kenjougo">
+                  申す
+                </p>
+                <p className="mt-1 text-[11px] uppercase tracking-wide text-kenjougo">
+                  謙譲語 · humble
+                </p>
+                <p className="mt-0.5 text-[11px] text-ink-faint">
+                  When you're speaking, to someone senior
+                </p>
+              </div>
             </div>
           </div>
         </div>

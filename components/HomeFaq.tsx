@@ -1,3 +1,5 @@
+import Stamp from "./Stamp";
+
 const FAQS = [
   {
     q: "Do I need an account?",
@@ -21,7 +23,8 @@ export default function HomeFaq() {
   return (
     <section className="w-full">
       <div className="flex flex-col w-full max-w-3xl gap-8 px-4 py-16 mx-auto sm:py-20">
-        <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Stamp kanji="問" />
           <span className="text-xs font-semibold tracking-wide uppercase text-ink-faint">
             FAQ
           </span>
