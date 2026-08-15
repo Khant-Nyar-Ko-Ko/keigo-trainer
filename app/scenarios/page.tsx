@@ -1,11 +1,9 @@
-import AppNav from "@/components/AppNav";
 import PageHeader from "@/components/PageHeader";
 import ScenarioPractice from "@/components/ScenarioPractice";
 
 export default function ScenariosPage() {
   return (
     <div className="flex flex-col items-center px-4 py-16 bg-paper">
-      <AppNav />
       <PageHeader
         mode="Scenario Practice"
         title="Scenario Practice"

@@ -154,7 +154,6 @@ export default function Quiz() {
               onChange={(e) => setInput(e.target.value)}
               disabled={!!result}
               placeholder="Type the converted form..."
-              autoFocus
               className="px-4 py-3 text-lg border outline-none border-line-strong bg-paper text-ink focus:border-accent disabled:opacity-60"
             />
             {!result && (

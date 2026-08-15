@@ -51,7 +51,7 @@ export default function Footer() {
     <footer className="w-full mt-16 border-t border-line bg-paper-raised">
       <div className="grid w-full max-w-5xl grid-cols-1 gap-10 px-4 py-12 mx-auto sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
-          <div className="flex items-baseline gap-2 text-lg font-display text-ink">
+          <div className="flex items-baseline gap-2 text-lg font-semibold font-heading text-ink">
             <span lang="ja" className="text-accent">敬語</span>
             <span>Companion</span>
           </div>
