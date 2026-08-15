@@ -29,7 +29,7 @@ function AccuracyBar({ label, stats }: { label: string; stats: ModeStats }) {
         </span>
       </div>
       <div className="h-1.5 w-full bg-paper-sunken">
-        <div className="h-1.5 bg-red" style={{ width: `${pct ?? 0}%` }} />
+        <div className="h-1.5 bg-accent" style={{ width: `${pct ?? 0}%` }} />
       </div>
     </div>
   );
@@ -71,7 +71,7 @@ export default function ProgressOverview() {
   return (
     <div className="flex flex-col w-full max-w-lg gap-6">
       <div className="flex flex-col gap-4 p-6 border border-line bg-paper-raised">
-        <span className="text-xs font-semibold tracking-wide uppercase text-red">
+        <span className="text-xs font-semibold tracking-wide uppercase text-accent">
           Lifetime accuracy
         </span>
         <AccuracyBar label="Drills" stats={stats.drills} />
@@ -79,7 +79,7 @@ export default function ProgressOverview() {
       </div>
 
       <div className="flex flex-col gap-3 p-6 border border-line bg-paper-raised">
-        <span className="text-xs font-semibold tracking-wide uppercase text-red">
+        <span className="text-xs font-semibold tracking-wide uppercase text-accent">
           Verbs to review
         </span>
         {weakVerbs.length === 0 ? (
@@ -112,7 +112,7 @@ export default function ProgressOverview() {
       </div>
 
       <div className="flex flex-col gap-3 p-6 border border-line bg-paper-raised">
-        <span className="text-xs font-semibold tracking-wide uppercase text-red">
+        <span className="text-xs font-semibold tracking-wide uppercase text-accent">
           Scenarios to review
         </span>
         {weakScenarios.length === 0 ? (
@@ -141,7 +141,7 @@ export default function ProgressOverview() {
       {hasAnyData && (
         <button
           onClick={handleReset}
-          className="self-center text-xs underline text-ink-faint decoration-line-strong underline-offset-4 hover:text-red"
+          className="self-center text-xs underline text-ink-faint decoration-line-strong underline-offset-4 hover:text-accent"
         >
           Reset all progress
         </button>

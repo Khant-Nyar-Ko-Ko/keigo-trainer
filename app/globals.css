@@ -1,37 +1,83 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #18181a;
-  --ink-soft: #57585c;
-  --ink-faint: #8a8b8f;
+  --ink: #18181b;
+  --ink-soft: #52525b;
+  --ink-faint: #71717a;
   --paper: #ffffff;
   --paper-raised: #fafafa;
   --paper-sunken: #f0f0f0;
-  --line: #e2e2e2;
-  --line-strong: #c7c7c7;
-  --red: #c1272d;
-  --red-deep: #8f1b20;
-  --red-soft: #fbe7e6;
-  --green: #1f7a4d;
-  --green-soft: #e3f3ea;
+  --line: #e4e4e7;
+  --line-strong: #c7c7cc;
+
+  /* Keigo accent — brand red, doubles as the "incorrect" signal */
+  --accent: #d97706;
+  --accent-deep: #b45309;
+  --accent-soft: #fef2e2;
+
+  /* Correctness feedback — kept distinct from the sonkeigo register hue below */
+  --success: #16a34a;
+  --success-soft: #eafbf0;
+
+  /* Register-identity hues, used to tell 尊敬語/謙譲語/丁寧語 apart at a glance */
+  --sonkeigo: #059669;
+  --sonkeigo-soft: #ecfdf5;
+  --kenjougo: #4f46e5;
+  --kenjougo-soft: #eef2ff;
+  --teineigo: #64748b;
+  --teineigo-soft: #f1f5f9;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --ink: #f1f1f1;
-    --ink-soft: #b6b7ba;
-    --ink-faint: #85868a;
-    --paper: #131313;
-    --paper-raised: #1b1b1b;
-    --paper-sunken: #0c0c0c;
-    --line: #2c2c2c;
-    --line-strong: #3e3e3e;
-    --red: #e2645f;
-    --red-deep: #b23b38;
-    --red-soft: #3a1d1b;
-    --green: #4caf7d;
-    --green-soft: #16281f;
+  :root:not([data-theme="light"]) {
+    --ink: #f4f4f5;
+    --ink-soft: #a1a1aa;
+    --ink-faint: #71717a;
+    --paper: #09090b;
+    --paper-raised: #121215;
+    --paper-sunken: #050506;
+    --line: #27272a;
+    --line-strong: #3f3f46;
+
+    --accent: #dc2626;
+    --accent-deep: #b91c1c;
+    --accent-soft: #3a1410;
+
+    --success: #22c55e;
+    --success-soft: #0f2a19;
+
+    --sonkeigo: #10b981;
+    --sonkeigo-soft: #062e22;
+    --kenjougo: #818cf8;
+    --kenjougo-soft: #1e1b4b;
+    --teineigo: #94a3b8;
+    --teineigo-soft: #1e293b;
   }
+}
+
+:root[data-theme="dark"] {
+  --ink: #f4f4f5;
+  --ink-soft: #a1a1aa;
+  --ink-faint: #71717a;
+  --paper: #09090b;
+  --paper-raised: #121215;
+  --paper-sunken: #050506;
+  --line: #27272a;
+  --line-strong: #3f3f46;
+
+  --accent: #dc2626;
+  --accent-deep: #b91c1c;
+  --accent-soft: #3a1410;
+
+  --success: #22c55e;
+  --success-soft: #0f2a19;
+
+  --sonkeigo: #10b981;
+  --sonkeigo-soft: #062e22;
+  --kenjougo: #818cf8;
+  --kenjougo-soft: #1e1b4b;
+  --teineigo: #94a3b8;
+  --teineigo-soft: #1e293b;
 }
 
 @theme inline {
@@ -43,13 +89,24 @@
   --color-paper-sunken: var(--paper-sunken);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
-  --color-red: var(--red);
-  --color-red-deep: var(--red-deep);
-  --color-red-soft: var(--red-soft);
-  --color-green: var(--green);
-  --color-green-soft: var(--green-soft);
+
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+
+  --color-sonkeigo: var(--sonkeigo);
+  --color-sonkeigo-soft: var(--sonkeigo-soft);
+  --color-kenjougo: var(--kenjougo);
+  --color-kenjougo-soft: var(--kenjougo-soft);
+  --color-teineigo: var(--teineigo);
+  --color-teineigo-soft: var(--teineigo-soft);
+
   --font-display: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Segoe UI", sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP",
+    "Segoe UI", sans-serif;
 }
 
 body {
