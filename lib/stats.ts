@@ -1,4 +1,7 @@
-const STORAGE_KEY = "keigo-trainer-stats";
+import { pushStatsDelta, pushStatsReset } from "./sync";
+
+export const STATS_STORAGE_KEY = "keigo-trainer-stats";
+const STORAGE_KEY = STATS_STORAGE_KEY;
 
 export type StatsMode = "drills" | "scenarios";
 
@@ -31,9 +34,11 @@ export function recordAttempt(mode: StatsMode, correct: boolean): Stats {
     total: stats[mode].total + 1,
   };
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
+  void pushStatsDelta(mode, correct ? 1 : 0, 1);
   return stats;
 }
 
 export function resetStats(): void {
   window.localStorage.removeItem(STORAGE_KEY);
+  void pushStatsReset();
 }

@@ -16,6 +16,7 @@ import {
 import { CATEGORY_LABEL } from "@/lib/scenarios";
 import { loadStats, ModeStats, resetStats, Stats } from "@/lib/stats";
 import { TARGET_LABEL } from "@/lib/verbs";
+import { useAuth } from "./AuthProvider";
 
 function AccuracyBar({ label, stats }: { label: string; stats: ModeStats }) {
   const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : null;
@@ -35,6 +36,7 @@ function AccuracyBar({ label, stats }: { label: string; stats: ModeStats }) {
 }
 
 export default function ProgressOverview() {
+  const { lastSyncedAt } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [scenarioProgress, setScenarioProgress] = useState<ScenarioProgress | null>(null);
@@ -43,7 +45,9 @@ export default function ProgressOverview() {
     setStats(loadStats());
     setProgress(loadProgress());
     setScenarioProgress(loadScenarioProgress());
-  }, []);
+    // Re-load once a background sync-on-sign-in completes, so numbers here
+    // don't stay stale if this page was open at the moment of sign-in.
+  }, [lastSyncedAt]);
 
   function handleReset() {
     if (!window.confirm("Clear all saved progress? This can't be undone.")) return;

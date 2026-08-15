@@ -1,6 +1,8 @@
 import { conjugate, HonorificTarget, VERB_BANK, VerbEntry } from "./verbs";
+import { pushProgressDelta, pushProgressReset } from "./sync";
 
-const STORAGE_KEY = "keigo-trainer-progress";
+export const PROGRESS_STORAGE_KEY = "keigo-trainer-progress";
+const STORAGE_KEY = PROGRESS_STORAGE_KEY;
 
 export type Progress = Record<string, number>;
 
@@ -23,11 +25,13 @@ export function recordMiss(verbId: string, target: HonorificTarget): Progress {
   const key = questionKey(verbId, target);
   progress[key] = (progress[key] ?? 0) + 1;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  void pushProgressDelta(key, 1);
   return progress;
 }
 
 export function resetProgress(): void {
   window.localStorage.removeItem(STORAGE_KEY);
+  void pushProgressReset();
 }
 
 export interface WeakVerb {
