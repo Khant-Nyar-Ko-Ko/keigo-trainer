@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import {
   ActorAnswer,
@@ -19,7 +20,13 @@ function randomVerbForRegister(target: "sonkeigo" | "kenjougo"): VerbEntry {
 }
 
 const OPTION_CLASS =
-  "border border-line-strong bg-paper px-4 py-3 text-left text-sm hover:border-accent hover:bg-accent-soft";
+  "border border-line-strong bg-paper px-4 py-4 text-left text-sm shadow-low hover:border-accent hover:bg-accent-soft";
+
+interface Crumb {
+  label: string;
+  // Path to restore when this crumb is clicked — resets everything after it.
+  resetTo: DecisionPath;
+}
 
 export default function DecisionTree() {
   const [path, setPath] = useState<DecisionPath>({});
@@ -50,28 +57,59 @@ export default function DecisionTree() {
     pickVerb(deriveRegister(next)!);
   }
 
+  function goTo(next: DecisionPath) {
+    setPath(next);
+    setVerb(null);
+  }
+
+  function goBack() {
+    if (path.group !== undefined) return goTo({ actor: path.actor, addressee: path.addressee });
+    if (path.addressee !== undefined) return goTo({ actor: path.actor });
+    if (path.actor !== undefined) return goTo({});
+  }
+
   function reset() {
     setPath({});
     setVerb(null);
   }
 
+  const crumbs: Crumb[] = [];
+  if (path.actor) {
+    crumbs.push({
+      label: path.actor === "self" ? "My own action" : "Someone else's action",
+      resetTo: {},
+    });
+  }
+  if (path.addressee) {
+    crumbs.push({
+      label:
+        path.addressee === "direct" ? "Speaking to them directly" : "Describing to a third party",
+      resetTo: { actor: path.actor },
+    });
+  }
+  if (path.group) {
+    crumbs.push({
+      label: path.group === "own-group" ? "Part of my own group" : "Outside my group",
+      resetTo: { actor: path.actor, addressee: path.addressee },
+    });
+  }
+
   return (
-    <div className="flex flex-col w-full max-w-lg gap-6">
-      {path.actor && (
-        <div className="flex flex-wrap gap-2 text-xs text-ink-faint">
-          <span className="px-2 py-1 border border-line">
-            {path.actor === "self" ? "My own action" : "Someone else's action"}
-          </span>
-          {path.addressee && (
-            <span className="px-2 py-1 border border-line">
-              {path.addressee === "direct" ? "Speaking to them directly" : "Describing to a third party"}
+    <div className="flex w-full max-w-lg flex-col gap-6">
+      {crumbs.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 text-xs text-ink-faint">
+          {crumbs.map((crumb, i) => (
+            <span key={i} className="flex items-center gap-2">
+              {i > 0 && <span aria-hidden="true">→</span>}
+              <button
+                type="button"
+                onClick={() => goTo(crumb.resetTo)}
+                className="border border-line px-2 py-1 hover:border-accent hover:text-accent"
+              >
+                {crumb.label}
+              </button>
             </span>
-          )}
-          {path.group && (
-            <span className="px-2 py-1 border border-line">
-              {path.group === "own-group" ? "Part of my own group" : "Outside my group"}
-            </span>
-          )}
+          ))}
         </div>
       )}
 
@@ -98,6 +136,13 @@ export default function DecisionTree() {
           <button className={OPTION_CLASS} onClick={() => answerAddressee("third-party")}>
             Describing them to a third party
           </button>
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex w-fit items-center gap-1.5 text-xs text-ink-faint hover:text-accent"
+          >
+            <ArrowLeft size={13} /> Back
+          </button>
         </div>
       )}
 
@@ -113,26 +158,36 @@ export default function DecisionTree() {
           <button className={OPTION_CLASS} onClick={() => answerGroup("outsider")}>
             No — outside my group
           </button>
+          <button
+            type="button"
+            onClick={goBack}
+            className="inline-flex w-fit items-center gap-1.5 text-xs text-ink-faint hover:text-accent"
+          >
+            <ArrowLeft size={13} /> Back
+          </button>
         </div>
       )}
 
       {step === "result" && register && verb && (
-        <div className="flex flex-col gap-4 p-6 border border-line bg-paper-raised">
-          <div className="flex items-center gap-3">
+        <div className="flex animate-[fade-in-up_0.25s_ease-out] flex-col gap-5 border border-line border-l-4 bg-paper-raised p-6 sm:p-8"
+          style={{ borderLeftColor: `var(--${register})` }}
+        >
+          <div className="flex items-center gap-4">
             <RegisterScale target={register} />
             <span
               lang="ja"
-              className={`font-semibold ${register === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"
-                }`}
+              className={`font-display text-2xl font-semibold ${
+                register === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"
+              }`}
             >
               {register === "sonkeigo" ? "尊敬語" : "謙譲語"}
             </span>
           </div>
-          <p className="text-sm text-ink-soft">{explainPath(path)}</p>
-          <div className="pt-4 border-t border-line">
-            <p className="mb-1 text-xs tracking-wide uppercase text-ink-faint">Example</p>
+          <p className="text-sm leading-relaxed text-ink-soft">{explainPath(path)}</p>
+          <div className="border-t border-line pt-5">
+            <p className="mb-2 text-xs uppercase tracking-wide text-ink-faint">Example</p>
             <div className="flex items-baseline gap-2">
-              <span lang="ja" className="text-2xl font-display">
+              <span lang="ja" className="font-display text-3xl">
                 {verb.dictionaryForm}
               </span>
               <span className="text-sm text-ink-faint">
@@ -141,18 +196,26 @@ export default function DecisionTree() {
             </div>
             <div
               lang="ja"
-              className={`mt-1 font-display text-xl ${register === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"
-                }`}
+              className={`mt-2 font-display text-2xl font-semibold ${
+                register === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"
+              }`}
             >
               {conjugate(verb, register)}
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               className="border border-line-strong px-3 py-1.5 text-sm hover:bg-paper-sunken"
               onClick={() => pickVerb(register)}
             >
               Another example
+            </button>
+            <button
+              type="button"
+              onClick={goBack}
+              className="inline-flex items-center gap-1.5 border border-line-strong px-3 py-1.5 text-sm hover:bg-paper-sunken"
+            >
+              <ArrowLeft size={13} /> Change last answer
             </button>
             <button
               className="bg-ink px-3 py-1.5 text-sm font-medium text-paper hover:bg-accent-deep"

@@ -1,84 +1,117 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #0f172a;
-  --ink-soft: #475569;
-  --ink-faint: #94a3b8;
-  --paper: #ffffff;
-  --paper-raised: #f8f9fb;
-  --paper-sunken: #eef1f5;
-  --line: #e2e8f0;
-  --line-strong: #cbd5e1;
+  /* Warm "washi paper" surface system — not pure white/black */
+  --paper: #faf8f4;
+  --paper-raised: #ffffff;
+  --paper-sunken: #f0ede6;
+  --line: #e5e0d5;
+  --line-strong: #cfc7b4;
+  --ink: #211f1a;
+  --ink-soft: #5a5347;
+  --ink-faint: #948c78;
 
-  /* Keigo accent — bold saturated orange, doubles as the "incorrect" signal */
+  /* Vermilion — the single saturated accent. Primary action / active nav /
+     focus ring ONLY. Never used to signal "incorrect" — see --incorrect. */
   --accent: #dc2626;
   --accent-deep: #b91c1c;
   --accent-soft: #fef2f2;
 
-  /* Correctness feedback — kept distinct from the sonkeigo register hue below */
-  --success: #16a34a;
-  --success-soft: #eafbf0;
+  /* Result tokens — muted, stamp-like, never neon */
+  --correct: #3f6b4f;
+  --correct-soft: #eaf1ea;
+  --incorrect: #9c4a3f;
+  --incorrect-soft: #f5e9e6;
+  --partial: #a8792f;
+  --partial-soft: #f6eede;
 
-  /* Register-identity hues, used to tell 尊敬語/謙譲語/丁寧語 apart at a glance */
-  --sonkeigo: #059669;
-  --sonkeigo-soft: #ecfdf5;
-  --kenjougo: #4f46e5;
-  --kenjougo-soft: #eef2ff;
-  --teineigo: #64748b;
-  --teineigo-soft: #f1f5f9;
+  /* Register-identity hues — one per register, used identically across the
+     scale, scenario chips, decision tree, and notes */
+  --sonkeigo: #2f6e52;
+  --sonkeigo-soft: #e9f1ec;
+  --kenjougo: #4f4a8f;
+  --kenjougo-soft: #ecebf5;
+  --teineigo: #6b6455;
+  --teineigo-soft: #f0ede6;
+  --plain: #9b9282;
+  --plain-soft: #f2efe8;
+
+  /* Spacing / radius / shadow scale */
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --shadow-low: 0 1px 2px rgba(33, 31, 26, 0.06);
+  --shadow-high: 0 8px 24px rgba(33, 31, 26, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ink: #f4f4f5;
-    --ink-soft: #a8afc0;
-    --ink-faint: #6b7383;
-    --paper: #0b1220;
-    --paper-raised: #131c2e;
-    --paper-sunken: #070b14;
-    --line: #1f2937;
-    --line-strong: #2e3b52;
+    /* Warm dark — dark wood / sumi ink at night, not navy or inverted gray */
+    --paper: #1a1712;
+    --paper-raised: #221e17;
+    --paper-sunken: #120f0b;
+    --line: #3a3428;
+    --line-strong: #4d4636;
+    --ink: #f2ede2;
+    --ink-soft: #bdb4a0;
+    --ink-faint: #7d7565;
 
-    --accent: #f97316;
-    --accent-deep: #fb923c;
-    --accent-soft: #3a2410;
+    --accent: #ef4444;
+    --accent-deep: #f87171;
+    --accent-soft: #3b1212;
 
-    --success: #22c55e;
-    --success-soft: #0f2a19;
+    --correct: #74ab88;
+    --correct-soft: #1c2a20;
+    --incorrect: #c17a6c;
+    --incorrect-soft: #2e1c18;
+    --partial: #d1a355;
+    --partial-soft: #302614;
 
-    --sonkeigo: #10b981;
-    --sonkeigo-soft: #062e22;
-    --kenjougo: #818cf8;
-    --kenjougo-soft: #1e1b4b;
-    --teineigo: #94a3b8;
-    --teineigo-soft: #1e293b;
+    --sonkeigo: #5fae87;
+    --sonkeigo-soft: #1a2b21;
+    --kenjougo: #8f8ad1;
+    --kenjougo-soft: #26243d;
+    --teineigo: #a49b86;
+    --teineigo-soft: #292418;
+    --plain: #b3a891;
+    --plain-soft: #241f16;
+
+    --shadow-low: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-high: 0 8px 24px rgba(0, 0, 0, 0.45);
   }
 }
 
 :root[data-theme="dark"] {
-  --ink: #f4f4f5;
-  --ink-soft: #a8afc0;
-  --ink-faint: #6b7383;
-  --paper: #0b1220;
-  --paper-raised: #131c2e;
-  --paper-sunken: #070b14;
-  --line: #1f2937;
-  --line-strong: #2e3b52;
+  --paper: #1a1712;
+  --paper-raised: #221e17;
+  --paper-sunken: #120f0b;
+  --line: #3a3428;
+  --line-strong: #4d4636;
+  --ink: #f2ede2;
+  --ink-soft: #bdb4a0;
+  --ink-faint: #7d7565;
 
-  /* Red Accent in Dark Mode */
   --accent: #ef4444;
   --accent-deep: #f87171;
   --accent-soft: #3b1212;
 
-  --success: #22c55e;
-  --success-soft: #0f2a19;
+  --correct: #74ab88;
+  --correct-soft: #1c2a20;
+  --incorrect: #c17a6c;
+  --incorrect-soft: #2e1c18;
+  --partial: #d1a355;
+  --partial-soft: #302614;
 
-  --sonkeigo: #10b981;
-  --sonkeigo-soft: #062e22;
-  --kenjougo: #818cf8;
-  --kenjougo-soft: #1e1b4b;
-  --teineigo: #94a3b8;
-  --teineigo-soft: #1e293b;
+  --sonkeigo: #5fae87;
+  --sonkeigo-soft: #1a2b21;
+  --kenjougo: #8f8ad1;
+  --kenjougo-soft: #26243d;
+  --teineigo: #a49b86;
+  --teineigo-soft: #292418;
+  --plain: #b3a891;
+  --plain-soft: #241f16;
+
+  --shadow-low: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-high: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 @theme inline {
@@ -95,8 +128,12 @@
   --color-accent-deep: var(--accent-deep);
   --color-accent-soft: var(--accent-soft);
 
-  --color-success: var(--success);
-  --color-success-soft: var(--success-soft);
+  --color-correct: var(--correct);
+  --color-correct-soft: var(--correct-soft);
+  --color-incorrect: var(--incorrect);
+  --color-incorrect-soft: var(--incorrect-soft);
+  --color-partial: var(--partial);
+  --color-partial-soft: var(--partial-soft);
 
   --color-sonkeigo: var(--sonkeigo);
   --color-sonkeigo-soft: var(--sonkeigo-soft);
@@ -104,19 +141,70 @@
   --color-kenjougo-soft: var(--kenjougo-soft);
   --color-teineigo: var(--teineigo);
   --color-teineigo-soft: var(--teineigo-soft);
+  --color-plain: var(--plain);
+  --color-plain-soft: var(--plain-soft);
 
-  /* Serif pairing reserved for displaying actual Japanese verb/phrase content */
-  --font-display: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
-  /* Bold sans used for branding chrome and headline text (hero, page titles) */
-  --font-heading:
-    var(--font-heading-latin), -apple-system, "Hiragino Sans", "Yu Gothic",
-    "Noto Sans JP", sans-serif;
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic",
-    "Noto Sans JP", "Segoe UI", sans-serif;
+  --shadow-low: var(--shadow-low);
+  --shadow-high: var(--shadow-high);
+
+  /* Editorial serif — Latin headings paired with the JP serif (Mincho) for
+     large/prominent Japanese text (verb display). Deliberately not a bold
+     geometric "SaaS" sans. */
+  --font-display: var(--font-display-latin), "Hiragino Mincho ProN", "Yu Mincho", serif;
+  /* Restrained UI sans — Latin body/UI text paired with the JP gothic
+     (Hiragino Sans / Yu Gothic) for compact Japanese labels and UI text. */
+  --font-sans: var(--font-sans-latin), -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+    "Yu Gothic", "Noto Sans JP", "Segoe UI", sans-serif;
 }
 
 body {
   background: var(--paper);
   color: var(--ink);
+}
+
+/* Japanese text reads notably larger and looser-tracked than the Latin UI
+   text around it — legibility for characters, not an accident of fallback. */
+[lang="ja"] {
+  letter-spacing: 0.02em;
+}
+
+/* Systematic visible focus ring for every interactive element — a border
+   color change alone isn't reliably visible enough for keyboard users.
+   Components may still layer their own focus-visible styles on top. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Short, purposeful reveal motion — automatically neutralized above under
+   prefers-reduced-motion. */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

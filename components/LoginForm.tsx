@@ -96,7 +96,7 @@ export default function LoginForm() {
         <div
           role="status"
           aria-live="polite"
-          className="p-4 text-sm border border-success bg-success-soft text-ink-soft"
+          className="p-4 text-sm border border-correct bg-correct-soft text-ink-soft"
         >
           Check <span className="font-semibold text-ink">{email}</span> for a sign-in link.
         </div>
@@ -106,7 +106,7 @@ export default function LoginForm() {
         <div
           role="status"
           aria-live="polite"
-          className="p-4 text-sm border border-accent bg-accent-soft text-ink-soft"
+          className="p-4 text-sm border border-incorrect bg-incorrect-soft text-ink-soft"
         >
           {message}
         </div>
