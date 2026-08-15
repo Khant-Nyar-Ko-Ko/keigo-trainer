@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #18181b;
-  --ink-soft: #52525b;
-  --ink-faint: #71717a;
+  --ink: #0f172a;
+  --ink-soft: #475569;
+  --ink-faint: #94a3b8;
   --paper: #ffffff;
-  --paper-raised: #fafafa;
-  --paper-sunken: #f0f0f0;
-  --line: #e4e4e7;
-  --line-strong: #c7c7cc;
+  --paper-raised: #f8f9fb;
+  --paper-sunken: #eef1f5;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
 
-  /* Keigo accent — brand red, doubles as the "incorrect" signal */
-  --accent: #d97706;
-  --accent-deep: #b45309;
-  --accent-soft: #fef2e2;
+  /* Keigo accent — bold saturated orange, doubles as the "incorrect" signal */
+  --accent: #dc2626;
+  --accent-deep: #b91c1c;
+  --accent-soft: #fef2f2;
 
   /* Correctness feedback — kept distinct from the sonkeigo register hue below */
   --success: #16a34a;
@@ -31,17 +31,17 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --ink: #f4f4f5;
-    --ink-soft: #a1a1aa;
-    --ink-faint: #71717a;
-    --paper: #09090b;
-    --paper-raised: #121215;
-    --paper-sunken: #050506;
-    --line: #27272a;
-    --line-strong: #3f3f46;
+    --ink-soft: #a8afc0;
+    --ink-faint: #6b7383;
+    --paper: #0b1220;
+    --paper-raised: #131c2e;
+    --paper-sunken: #070b14;
+    --line: #1f2937;
+    --line-strong: #2e3b52;
 
-    --accent: #dc2626;
-    --accent-deep: #b91c1c;
-    --accent-soft: #3a1410;
+    --accent: #f97316;
+    --accent-deep: #fb923c;
+    --accent-soft: #3a2410;
 
     --success: #22c55e;
     --success-soft: #0f2a19;
@@ -57,17 +57,18 @@
 
 :root[data-theme="dark"] {
   --ink: #f4f4f5;
-  --ink-soft: #a1a1aa;
-  --ink-faint: #71717a;
-  --paper: #09090b;
-  --paper-raised: #121215;
-  --paper-sunken: #050506;
-  --line: #27272a;
-  --line-strong: #3f3f46;
+  --ink-soft: #a8afc0;
+  --ink-faint: #6b7383;
+  --paper: #0b1220;
+  --paper-raised: #131c2e;
+  --paper-sunken: #070b14;
+  --line: #1f2937;
+  --line-strong: #2e3b52;
 
-  --accent: #dc2626;
-  --accent-deep: #b91c1c;
-  --accent-soft: #3a1410;
+  /* Red Accent in Dark Mode */
+  --accent: #ef4444;
+  --accent-deep: #f87171;
+  --accent-soft: #3b1212;
 
   --success: #22c55e;
   --success-soft: #0f2a19;
@@ -104,9 +105,15 @@
   --color-teineigo: var(--teineigo);
   --color-teineigo-soft: var(--teineigo-soft);
 
+  /* Serif pairing reserved for displaying actual Japanese verb/phrase content */
   --font-display: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "Noto Sans JP",
-    "Segoe UI", sans-serif;
+  /* Bold sans used for branding chrome and headline text (hero, page titles) */
+  --font-heading:
+    var(--font-heading-latin), -apple-system, "Hiragino Sans", "Yu Gothic",
+    "Noto Sans JP", sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic",
+    "Noto Sans JP", "Segoe UI", sans-serif;
 }
 
 body {

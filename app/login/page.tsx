@@ -1,12 +1,10 @@
 import { Suspense } from "react";
-import AppNav from "@/components/AppNav";
 import LoginForm from "@/components/LoginForm";
 import PageHeader from "@/components/PageHeader";
 
 export default function LoginPage() {
   return (
     <div className="flex flex-col items-center px-4 py-16 bg-paper">
-      <AppNav />
       <PageHeader
         mode="Account"
         title="Sign In"

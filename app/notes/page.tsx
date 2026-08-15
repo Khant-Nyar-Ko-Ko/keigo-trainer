@@ -1,11 +1,9 @@
-import AppNav from "@/components/AppNav";
 import PageHeader from "@/components/PageHeader";
 import TextbookNotes from "@/components/TextbookNotes";
 
 export default function NotesPage() {
   return (
     <div className="flex flex-col items-center px-4 py-16 bg-paper">
-      <AppNav />
       <PageHeader
         mode="Nuance Notes"
         title="Textbook vs. Real Japanese"

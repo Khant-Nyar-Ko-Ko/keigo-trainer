@@ -30,7 +30,7 @@ export default function AppNav() {
               <span className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sonkeigo" />
               <span className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 translate-y-1/2 rounded-full bg-kenjougo" />
             </span>
-            <span className="flex items-baseline gap-2 text-lg whitespace-nowrap font-display text-ink">
+            <span className="flex items-baseline gap-2 text-lg font-semibold whitespace-nowrap font-heading text-ink">
               <span lang="ja" className="text-accent">敬語</span>
               <span>Companion</span>
             </span>

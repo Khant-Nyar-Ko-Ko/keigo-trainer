@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import { Space_Grotesk } from "next/font/google";
 import Script from "next/script";
+import AppNav from "@/components/AppNav";
 import AuthProvider from "@/components/AuthProvider";
 import Footer from "@/components/Footer";
 import "./globals.css";
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-heading-latin",
+});
 
 export const metadata: Metadata = {
   title: "Keigo Companion",
@@ -18,12 +26,17 @@ const THEME_INIT_SCRIPT = `
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`h-full scroll-smooth antialiased ${spaceGrotesk.variable}`}
+      suppressHydrationWarning
+    >
       <body className="flex flex-col min-h-full font-sans">
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT_SCRIPT}
         </Script>
         <AuthProvider>
+          <AppNav />
           <div className="flex flex-col flex-1">{children}</div>
           <Footer />
         </AuthProvider>

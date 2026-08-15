@@ -99,7 +99,7 @@ export default function UserGuideModal() {
               <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-line">
                 <h2
                   id="user-guide-title"
-                  className="text-xl font-display text-ink"
+                  className="text-xl font-semibold font-heading text-ink"
                 >
                   Guide &amp; methodology
                 </h2>
