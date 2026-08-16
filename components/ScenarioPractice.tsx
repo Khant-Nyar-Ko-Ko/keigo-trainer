@@ -1,15 +1,32 @@
 "use client";
 
-import { CheckCircle2, MessageSquareQuote, XCircle } from "lucide-react";
+import { CheckCircle2, MessageSquareQuote, Volume2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ScenarioGradeResult, gradeScenarioAnswer } from "@/lib/scenario-grade";
 import { loadScenarioProgress, pickScenario, recordScenarioMiss } from "@/lib/scenario-progress";
 import { CATEGORY_LABEL, Scenario, scenarioVerb } from "@/lib/scenarios";
+import { hasJapaneseVoice, speakJapanese } from "@/lib/speech";
 import { recordAttempt } from "@/lib/stats";
 import { TARGET_LABEL } from "@/lib/verbs";
 
 const SESSION_LENGTH = 10;
+
+// Speaker button, shown only for phone scenarios and only once a Japanese
+// voice is confirmed available — hidden entirely rather than shown broken.
+function SpeakButton({ text, label }: { text: string; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => speakJapanese(text)}
+      aria-label={label}
+      title={label}
+      className="inline-flex items-center justify-center rounded-full border border-line-strong p-1.5 text-ink-soft hover:border-accent hover:text-accent"
+    >
+      <Volume2 size={14} />
+    </button>
+  );
+}
 
 function actorLabel(scenario: Scenario): string {
   return scenario.actorIsSelf ? "You" : scenario.otherParty;
@@ -24,9 +41,20 @@ export default function ScenarioPractice() {
   const [result, setResult] = useState<ScenarioGradeResult | null>(null);
   const [stats, setStats] = useState({ correct: 0, total: 0 });
   const [sessionComplete, setSessionComplete] = useState(false);
+  const [voiceAvailable, setVoiceAvailable] = useState(false);
 
   useEffect(() => {
     setScenario(pickScenario(loadScenarioProgress()));
+  }, []);
+
+  useEffect(() => {
+    // Voice lists load async in some browsers — check immediately, then
+    // again once the browser reports voices are ready.
+    setVoiceAvailable(hasJapaneseVoice());
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const onVoicesChanged = () => setVoiceAvailable(hasJapaneseVoice());
+    window.speechSynthesis.addEventListener("voiceschanged", onVoicesChanged);
+    return () => window.speechSynthesis.removeEventListener("voiceschanged", onVoicesChanged);
   }, []);
 
   function handleSubmit(e: React.FormEvent) {
@@ -166,7 +194,12 @@ export default function ScenarioPractice() {
               </div>
             </div>
 
-            <p className="font-semibold text-ink">{scenario.promptCue}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-semibold text-ink">{scenario.promptCue}</p>
+              {scenario.category === "phone" && voiceAvailable && (
+                <SpeakButton text={scenario.promptCue} label="Hear this line spoken" />
+              )}
+            </div>
             <div className="flex items-baseline gap-2">
               <span lang="ja" className="text-2xl font-display">
                 {verb.dictionaryForm}
@@ -223,12 +256,20 @@ export default function ScenarioPractice() {
                     ? "Wrong register — the conjugation itself was fine."
                     : "Not quite."}
               </div>
-              <div className="text-sm text-ink-soft">
-                Correct answer:{" "}
-                <span lang="ja" className="font-semibold text-ink">
-                  {result.canonicalAnswer}
-                </span>{" "}
-                (<span lang="ja">{TARGET_LABEL[scenario.targetRegister]}</span>)
+              <div className="flex items-center gap-2 text-sm text-ink-soft">
+                <span>
+                  Correct answer:{" "}
+                  <span lang="ja" className="font-semibold text-ink">
+                    {result.canonicalAnswer}
+                  </span>{" "}
+                  (<span lang="ja">{TARGET_LABEL[scenario.targetRegister]}</span>)
+                </span>
+                {scenario.category === "phone" && voiceAvailable && result.canonicalAnswer && (
+                  <SpeakButton
+                    text={result.canonicalAnswer}
+                    label="Hear the correct form spoken"
+                  />
+                )}
               </div>
 
               <div className="flex gap-3 p-4 text-sm border-t border-line/60 bg-paper-raised text-ink-soft">

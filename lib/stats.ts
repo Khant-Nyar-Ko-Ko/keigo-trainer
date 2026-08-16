@@ -4,7 +4,7 @@ import { pushStatsDelta, pushStatsReset } from "./sync";
 export const STATS_STORAGE_KEY = "keigo-trainer-stats";
 const STORAGE_KEY = STATS_STORAGE_KEY;
 
-export type StatsMode = "drills" | "scenarios";
+export type StatsMode = "drills" | "scenarios" | "words" | "requests";
 
 export interface ModeStats {
   correct: number;
@@ -16,6 +16,8 @@ export type Stats = Record<StatsMode, ModeStats>;
 const EMPTY: Stats = {
   drills: { correct: 0, total: 0 },
   scenarios: { correct: 0, total: 0 },
+  words: { correct: 0, total: 0 },
+  requests: { correct: 0, total: 0 },
 };
 
 export function loadStats(): Stats {

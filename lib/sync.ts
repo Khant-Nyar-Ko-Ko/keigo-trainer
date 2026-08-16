@@ -2,8 +2,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "./supabase/client";
 import type { Database } from "./supabase/types";
 import { loadProgress, PROGRESS_STORAGE_KEY } from "./progress";
+import { loadRequestProgress, REQUEST_PROGRESS_STORAGE_KEY } from "./request-progress";
 import { loadScenarioProgress, SCENARIO_PROGRESS_STORAGE_KEY } from "./scenario-progress";
 import { loadStats, STATS_STORAGE_KEY, StatsMode } from "./stats";
+import { loadWordProgress, WORD_PROGRESS_STORAGE_KEY } from "./word-progress";
 
 type Client = SupabaseClient<Database>;
 
@@ -31,6 +33,18 @@ export async function pushScenarioProgressDelta(key: string, delta: number): Pro
   const supabase = createClient();
   if (!supabase || !(await activeUserId(supabase))) return;
   await supabase.rpc("increment_scenario_progress", { p_key: key, p_delta: delta });
+}
+
+export async function pushWordProgressDelta(key: string, delta: number): Promise<void> {
+  const supabase = createClient();
+  if (!supabase || !(await activeUserId(supabase))) return;
+  await supabase.rpc("increment_word_progress", { p_key: key, p_delta: delta });
+}
+
+export async function pushRequestProgressDelta(key: string, delta: number): Promise<void> {
+  const supabase = createClient();
+  if (!supabase || !(await activeUserId(supabase))) return;
+  await supabase.rpc("increment_request_progress", { p_key: key, p_delta: delta });
 }
 
 export async function pushStatsDelta(
@@ -63,15 +77,35 @@ export async function pushScenarioProgressReset(): Promise<void> {
   await supabase.from("user_progress").update({ scenario_progress: {} }).eq("user_id", userId);
 }
 
+export async function pushWordProgressReset(): Promise<void> {
+  const supabase = createClient();
+  if (!supabase) return;
+  const userId = await activeUserId(supabase);
+  if (!userId) return;
+  await supabase.from("user_progress").update({ word_progress: {} }).eq("user_id", userId);
+}
+
+export async function pushRequestProgressReset(): Promise<void> {
+  const supabase = createClient();
+  if (!supabase) return;
+  const userId = await activeUserId(supabase);
+  if (!userId) return;
+  await supabase.from("user_progress").update({ request_progress: {} }).eq("user_id", userId);
+}
+
+const DEFAULT_STATS = {
+  drills: { correct: 0, total: 0 },
+  scenarios: { correct: 0, total: 0 },
+  words: { correct: 0, total: 0 },
+  requests: { correct: 0, total: 0 },
+};
+
 export async function pushStatsReset(): Promise<void> {
   const supabase = createClient();
   if (!supabase) return;
   const userId = await activeUserId(supabase);
   if (!userId) return;
-  await supabase
-    .from("user_progress")
-    .update({ stats: { drills: { correct: 0, total: 0 }, scenarios: { correct: 0, total: 0 } } })
-    .eq("user_id", userId);
+  await supabase.from("user_progress").update({ stats: DEFAULT_STATS }).eq("user_id", userId);
 }
 
 // Runs once per sign-in event (see components/AuthProvider.tsx). The first
@@ -116,8 +150,28 @@ async function mergeLocalIntoServer(supabase: Client): Promise<boolean> {
       if (error) throw error;
     }
 
+    const wordProgress = loadWordProgress();
+    for (const [key, misses] of Object.entries(wordProgress)) {
+      if (misses <= 0) continue;
+      const { error } = await supabase.rpc("increment_word_progress", {
+        p_key: key,
+        p_delta: misses,
+      });
+      if (error) throw error;
+    }
+
+    const requestProgress = loadRequestProgress();
+    for (const [key, misses] of Object.entries(requestProgress)) {
+      if (misses <= 0) continue;
+      const { error } = await supabase.rpc("increment_request_progress", {
+        p_key: key,
+        p_delta: misses,
+      });
+      if (error) throw error;
+    }
+
     const stats = loadStats();
-    for (const mode of ["drills", "scenarios"] as const) {
+    for (const mode of ["drills", "scenarios", "words", "requests"] as const) {
       const { correct, total } = stats[mode];
       if (total <= 0) continue;
       const { error } = await supabase.rpc("increment_stats", {
@@ -137,7 +191,7 @@ async function mergeLocalIntoServer(supabase: Client): Promise<boolean> {
 async function pullServerIntoLocal(supabase: Client, userId: string): Promise<void> {
   const { data: existing } = await supabase
     .from("user_progress")
-    .select("progress, scenario_progress, stats")
+    .select("progress, scenario_progress, word_progress, request_progress, stats")
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -147,7 +201,7 @@ async function pullServerIntoLocal(supabase: Client, userId: string): Promise<vo
       await supabase
         .from("user_progress")
         .insert({ user_id: userId })
-        .select("progress, scenario_progress, stats")
+        .select("progress, scenario_progress, word_progress, request_progress, stats")
         .single()
     ).data;
 
@@ -159,9 +213,12 @@ async function pullServerIntoLocal(supabase: Client, userId: string): Promise<vo
     JSON.stringify(row.scenario_progress ?? {}),
   );
   window.localStorage.setItem(
-    STATS_STORAGE_KEY,
-    JSON.stringify(
-      row.stats ?? { drills: { correct: 0, total: 0 }, scenarios: { correct: 0, total: 0 } },
-    ),
+    WORD_PROGRESS_STORAGE_KEY,
+    JSON.stringify(row.word_progress ?? {}),
   );
+  window.localStorage.setItem(
+    REQUEST_PROGRESS_STORAGE_KEY,
+    JSON.stringify(row.request_progress ?? {}),
+  );
+  window.localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(row.stats ?? DEFAULT_STATS));
 }

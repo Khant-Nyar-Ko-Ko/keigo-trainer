@@ -4,6 +4,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { loadProgress, Progress, weakestVerbs } from "@/lib/progress";
 import {
+  loadRequestProgress,
+  RequestProgress,
+  weakestRequests,
+} from "@/lib/request-progress";
+import { REQUEST_TIER_LABEL } from "@/lib/requests";
+import {
   loadScenarioProgress,
   ScenarioProgress,
   weakestScenarios,
@@ -11,6 +17,7 @@ import {
 import { CATEGORY_LABEL } from "@/lib/scenarios";
 import { loadStats, ModeStats, Stats } from "@/lib/stats";
 import { TARGET_LABEL } from "@/lib/verbs";
+import { loadWordProgress, WordProgress, weakestWords } from "@/lib/word-progress";
 import { useAuth } from "./AuthProvider";
 
 function AccuracyCard({ label, stats, href }: { label: string; stats: ModeStats; href: string }) {
@@ -44,21 +51,27 @@ export default function ProgressOverview() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [progress, setProgress] = useState<Progress | null>(null);
   const [scenarioProgress, setScenarioProgress] = useState<ScenarioProgress | null>(null);
+  const [wordProgress, setWordProgress] = useState<WordProgress | null>(null);
+  const [requestProgress, setRequestProgress] = useState<RequestProgress | null>(null);
 
   useEffect(() => {
     setStats(loadStats());
     setProgress(loadProgress());
     setScenarioProgress(loadScenarioProgress());
+    setWordProgress(loadWordProgress());
+    setRequestProgress(loadRequestProgress());
     // Re-load once a background sync-on-sign-in completes, so numbers here
     // don't stay stale if this page was open at the moment of sign-in.
   }, [lastSyncedAt]);
 
-  if (!stats || !progress || !scenarioProgress) {
+  if (!stats || !progress || !scenarioProgress || !wordProgress || !requestProgress) {
     return <div className="text-ink-faint">Loading...</div>;
   }
 
   const weakVerbs = weakestVerbs(progress, 8);
   const weakScenarios = weakestScenarios(scenarioProgress, 8);
+  const weakWords = weakestWords(wordProgress, 8);
+  const weakRequests = weakestRequests(requestProgress, 8);
 
   return (
     <div className="flex w-full max-w-5xl flex-col gap-6">
@@ -77,9 +90,11 @@ export default function ProgressOverview() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <AccuracyCard label="Verb drills" stats={stats.drills} href="/drills" />
+        <AccuracyCard label="Word Bank" stats={stats.words} href="/drills" />
         <AccuracyCard label="Scenario practice" stats={stats.scenarios} href="/scenarios" />
+        <AccuracyCard label="Request Scale" stats={stats.requests} href="/requests" />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -138,6 +153,75 @@ export default function ProgressOverview() {
                   <div className="flex flex-col gap-0.5">
                     <span className="text-xs uppercase tracking-wide text-ink-faint">
                       {CATEGORY_LABEL[scenario.category]}
+                    </span>
+                    <span className="text-sm text-ink">{scenario.promptCue}</span>
+                  </div>
+                  <span className="border border-line-strong px-1.5 py-0.5 text-xs text-ink-faint">
+                    {misses}×
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="flex flex-col gap-3 border border-line bg-paper-raised p-6">
+          <span className="text-xs font-semibold uppercase tracking-wide text-ink-faint">
+            Words to review
+          </span>
+          {weakWords.length === 0 ? (
+            <p className="text-sm text-ink-faint">
+              No misses yet — nice. This fills in as you drill.
+            </p>
+          ) : (
+            <ul className="flex flex-col divide-y divide-line">
+              {weakWords.map(({ word, target, misses }) => (
+                <li
+                  key={`${word.id}-${target}`}
+                  className="flex items-center justify-between gap-3 py-2.5"
+                >
+                  <div className="flex items-baseline gap-2">
+                    <span lang="ja" className="font-display text-lg">
+                      {word.plain}
+                    </span>
+                    <span className="text-sm text-ink-faint">
+                      <span lang="ja">{word.reading}</span> — {word.meaning}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span
+                      lang="ja"
+                      className={target === "sonkeigo" ? "text-sonkeigo" : "text-kenjougo"}
+                    >
+                      {TARGET_LABEL[target]}
+                    </span>
+                    <span className="border border-line-strong px-1.5 py-0.5 text-ink-faint">
+                      {misses}×
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-3 border border-line bg-paper-raised p-6">
+          <span className="text-xs font-semibold uppercase tracking-wide text-ink-faint">
+            Requests to review
+          </span>
+          {weakRequests.length === 0 ? (
+            <p className="text-sm text-ink-faint">
+              No misses yet — nice. This fills in as you practice.
+            </p>
+          ) : (
+            <ul className="flex flex-col divide-y divide-line">
+              {weakRequests.map(({ scenario, misses }) => (
+                <li key={scenario.id} className="flex items-center justify-between gap-3 py-2.5">
+                  <div className="flex flex-col gap-0.5">
+                    <span lang="ja" className="text-xs uppercase tracking-wide text-ink-faint">
+                      {REQUEST_TIER_LABEL[scenario.targetTier]}
                     </span>
                     <span className="text-sm text-ink">{scenario.promptCue}</span>
                   </div>

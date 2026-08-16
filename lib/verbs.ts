@@ -22,6 +22,11 @@ export interface VerbEntry {
   irregularKenjougo?: string;
   alternateSonkeigo?: string[];
   alternateKenjougo?: string[];
+  // て-form, hardcoded rather than derived — godan euphonic changes have
+  // real exceptions (行く takes って, not いて) that make deriving this from
+  // dictionary-form orthography a bug trap. Only populated for verbs used
+  // in Request Scale content (lib/requests.ts).
+  teForm?: string;
 }
 
 export const VERB_BANK: VerbEntry[] = [
@@ -216,6 +221,7 @@ export const VERB_BANK: VerbEntry[] = [
     type: "regular",
     stem: "待ち",
     prefix: "お",
+    teForm: "待って",
   },
   {
     id: "hanasu",
@@ -252,6 +258,7 @@ export const VERB_BANK: VerbEntry[] = [
     type: "regular",
     stem: "送り",
     prefix: "お",
+    teForm: "送って",
   },
   {
     id: "yobu",
@@ -288,6 +295,7 @@ export const VERB_BANK: VerbEntry[] = [
     type: "regular",
     stem: "説明",
     prefix: "ご",
+    teForm: "説明して",
   },
   {
     id: "annaisuru",
@@ -306,6 +314,7 @@ export const VERB_BANK: VerbEntry[] = [
     type: "regular",
     stem: "連絡",
     prefix: "ご",
+    teForm: "連絡して",
   },
   {
     id: "yoyakusuru",
@@ -315,6 +324,36 @@ export const VERB_BANK: VerbEntry[] = [
     type: "regular",
     stem: "予約",
     prefix: "ご",
+  },
+  {
+    id: "kakuninsuru",
+    dictionaryForm: "確認する",
+    reading: "かくにんする",
+    meaning: "to confirm",
+    type: "regular",
+    stem: "確認",
+    prefix: "ご",
+    teForm: "確認して",
+  },
+  {
+    id: "oshieru",
+    dictionaryForm: "教える",
+    reading: "おしえる",
+    meaning: "to tell / teach",
+    type: "regular",
+    stem: "教え",
+    prefix: "お",
+    teForm: "教えて",
+  },
+  {
+    id: "henkousuru",
+    dictionaryForm: "変更する",
+    reading: "へんこうする",
+    meaning: "to change",
+    type: "regular",
+    stem: "変更",
+    prefix: "ご",
+    teForm: "変更して",
   },
 ];
 
