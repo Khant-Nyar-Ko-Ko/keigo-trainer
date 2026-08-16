@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, GitBranch, Target, TrendingUp, Zap } from "lucide-react";
+import { BookOpen, GitBranch, MessagesSquare, Target, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthProvider";
@@ -8,8 +8,9 @@ import ThemeToggle from "./ThemeToggle";
 import UserGuideModal from "./UserGuideModal";
 
 const LINKS = [
-  { href: "/drills", label: "Verb Drills", short: "Drills", icon: Zap },
+  { href: "/drills", label: "Verb & Word Drills", short: "Drills", icon: Zap },
   { href: "/scenarios", label: "Scenario Practice", short: "Scenarios", icon: Target },
+  { href: "/requests", label: "Request Scale", short: "Requests", icon: MessagesSquare },
   { href: "/diagnostic", label: "Decision Diagnostic", short: "Diagnostic", icon: GitBranch },
   { href: "/notes", label: "Nuance Notes", short: "Notes", icon: BookOpen },
   { href: "/progress", label: "Progress", short: "Progress", icon: TrendingUp },
@@ -52,8 +53,7 @@ export default function AppNav() {
                     }`}
                 >
                   <Icon size={15} />
-                  <span className="hidden lg:inline">{link.label}</span>
-                  <span className="lg:hidden">{link.short}</span>
+                  <span>{link.short}</span>
                 </Link>
               );
             })}

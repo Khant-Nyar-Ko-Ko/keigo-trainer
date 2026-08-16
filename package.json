@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "verify:scenarios": "tsx scripts/verify-scenarios.ts"
+    "verify:scenarios": "tsx scripts/verify-scenarios.ts",
+    "verify:words": "tsx scripts/verify-words.ts",
+    "verify:requests": "tsx scripts/verify-requests.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.117.1",

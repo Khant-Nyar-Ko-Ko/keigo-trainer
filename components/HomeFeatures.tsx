@@ -1,4 +1,4 @@
-import { BookOpen, GitBranch, Target, TrendingUp, Zap } from "lucide-react";
+import { BookOpen, GitBranch, MessagesSquare, Target, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
 import Stamp from "./Stamp";
 
@@ -6,9 +6,9 @@ const FEATURES = [
   {
     href: "/drills",
     icon: Zap,
-    title: "Verb Drills",
+    title: "Verb & Word Drills",
     description:
-      "Conjugate common verbs into sonkeigo and kenjougo, graded instantly against a fixed key.",
+      "Conjugate verbs, nouns, and adjectives into sonkeigo and kenjougo, graded instantly against a fixed key.",
   },
   {
     href: "/scenarios",
@@ -16,6 +16,13 @@ const FEATURES = [
     title: "Scenario Practice",
     description:
       "Read a real situation and judge who to elevate and who to humble — not just conjugation.",
+  },
+  {
+    href: "/requests",
+    icon: MessagesSquare,
+    title: "Request Scale",
+    description:
+      "Escalate the same favor from てください to ていただけますでしょうか based on who's asking and how much you're imposing.",
   },
   {
     href: "/diagnostic",
@@ -36,7 +43,7 @@ const FEATURES = [
     icon: TrendingUp,
     title: "Progress",
     description:
-      "See accuracy by mode and the specific verbs or scenarios worth reviewing next.",
+      "See accuracy by mode and the specific verbs, words, or scenarios worth reviewing next.",
   },
 ] as const;
 
@@ -50,7 +57,7 @@ export default function HomeFeatures() {
             How it works
           </span>
           <h2 className="text-2xl font-semibold font-display text-ink sm:text-3xl">
-            Five ways to build judgment
+            Six ways to build judgment
           </h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
