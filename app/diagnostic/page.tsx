@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import DecisionTree from "@/components/DecisionTree";
 import PageHeader from "@/components/PageHeader";
+
+export const metadata: Metadata = {
+  title: "Decision Tree Diagnostic",
+  description:
+    "Walk through the actual reasoning process — answer a few questions about the situation, and see the honorific register it derives.",
+};
 
 export default function DiagnosticPage() {
   return (

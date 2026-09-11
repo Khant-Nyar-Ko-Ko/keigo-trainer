@@ -3,7 +3,9 @@ import { Fraunces, Work_Sans } from "next/font/google";
 import Script from "next/script";
 import AppNav from "@/components/AppNav";
 import AuthProvider from "@/components/AuthProvider";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -20,8 +22,16 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Keigo Companion",
-  description: "Practice Japanese keigo — verb drills and situational judgment.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Keigo Companion — Judgment-First Keigo Practice",
+    template: "%s | Keigo Companion",
+  },
+  description:
+    "Practice Japanese keigo the way it's actually used: judge who speaks to whom, then conjugate. Verb drills, scenario practice, and a decision-tree diagnostic for sonkeigo and kenjougo — 100% free, no account needed.",
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 const THEME_INIT_SCRIPT = `
@@ -47,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="flex flex-1 flex-col">{children}</div>
           <Footer />
         </AuthProvider>
+        <CookieConsentBanner />
       </body>
     </html>
   );

@@ -9,7 +9,7 @@
   --line-strong: #cfc7b4;
   --ink: #211f1a;
   --ink-soft: #5a5347;
-  --ink-faint: #948c78;
+  --ink-faint: #706a59;
 
   /* Vermilion — the single saturated accent. Primary action / active nav /
      focus ring ONLY. Never used to signal "incorrect" — see --incorrect. */
@@ -22,7 +22,7 @@
   --correct-soft: #eaf1ea;
   --incorrect: #9c4a3f;
   --incorrect-soft: #f5e9e6;
-  --partial: #a8792f;
+  --partial: #8b6427;
   --partial-soft: #f6eede;
 
   /* Register-identity hues — one per register, used identically across the
@@ -33,7 +33,10 @@
   --kenjougo-soft: #ecebf5;
   --teineigo: #6b6455;
   --teineigo-soft: #f0ede6;
-  --plain: #9b9282;
+  /* Neutral gray, not a darkened version of the warm palette — "plain" is the
+     unmarked/colorless register, and at the lightness AA text contrast
+     requires here it would otherwise collide with --teineigo. */
+  --plain: #6a6a6a;
   --plain-soft: #f2efe8;
 
   /* Spacing / radius / shadow scale */
@@ -53,9 +56,9 @@
     --line-strong: #4d4636;
     --ink: #f2ede2;
     --ink-soft: #bdb4a0;
-    --ink-faint: #7d7565;
+    --ink-faint: #8f8674;
 
-    --accent: #ef4444;
+    --accent: #f04c4c;
     --accent-deep: #f87171;
     --accent-soft: #3b1212;
 
@@ -88,9 +91,9 @@
   --line-strong: #4d4636;
   --ink: #f2ede2;
   --ink-soft: #bdb4a0;
-  --ink-faint: #7d7565;
+  --ink-faint: #8f8674;
 
-  --accent: #ef4444;
+  --accent: #f04c4c;
   --accent-deep: #f87171;
   --accent-soft: #3b1212;
 

@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import SettingsPanel from "@/components/SettingsPanel";
+
+export const metadata: Metadata = {
+  title: "Your Data",
+  description: "Export or clear what's saved in this browser.",
+  robots: { index: false },
+};
 
 export default function SettingsPage() {
   return (

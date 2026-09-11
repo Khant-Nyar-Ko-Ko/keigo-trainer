@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "What's stored, where it lives, and who ever sees it.",
+};
 
 export default function PrivacyPage() {
   return (

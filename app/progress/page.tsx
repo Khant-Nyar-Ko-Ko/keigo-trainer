@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import ProgressOverview from "@/components/ProgressOverview";
+
+export const metadata: Metadata = {
+  title: "Your Progress",
+  description: "What you've practiced and what still trips you up — pulled from your local history.",
+  robots: { index: false },
+};
 
 export default function ProgressPage() {
   return (
