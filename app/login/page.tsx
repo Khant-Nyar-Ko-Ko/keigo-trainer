@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import LoginForm from "@/components/LoginForm";
 import PageHeader from "@/components/PageHeader";
+
+export const metadata: Metadata = {
+  title: "Sign In",
+  description: "Sync your progress across devices — no password, just a link sent to your email.",
+  robots: { index: false },
+};
 
 export default function LoginPage() {
   return (

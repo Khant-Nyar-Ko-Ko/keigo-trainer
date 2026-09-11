@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import RequestPractice from "@/components/RequestPractice";
+
+export const metadata: Metadata = {
+  title: "Request Scale",
+  description:
+    "Same favor, different weight — escalate a request from てください to ていただけますでしょうか based on who's asking whom, and how much you're imposing.",
+};
 
 export default function RequestsPage() {
   return (

@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "The plain-language version of what you're agreeing to by using this.",
+};
 
 export default function TermsPage() {
   return (

@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/PageHeader";
+
+export const metadata: Metadata = {
+  title: "Cookie Policy",
+  description: "Most of what makes this app work isn't a cookie at all.",
+};
 
 export default function CookiesPage() {
   return (
