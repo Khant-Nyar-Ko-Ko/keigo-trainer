@@ -20,7 +20,7 @@ export default function Hero() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/drills"
-              className="px-6 py-3 text-base font-semibold text-white bg-accent hover:bg-accent-deep"
+              className="px-6 py-3 text-base font-semibold text-white bg-[#dc2626] hover:bg-[#b91c1c]"
             >
               Start practicing
             </Link>
