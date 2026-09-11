@@ -20,13 +20,21 @@ const workSans = Work_Sans({
   variable: "--font-sans-latin",
 });
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Keigo Companion — Judgment-First Keigo Practice",
     template: "%s | Keigo Companion",
   },
   description:
     "Practice Japanese keigo the way it's actually used: judge who speaks to whom, then conjugate. Verb drills, scenario practice, and a decision-tree diagnostic for sonkeigo and kenjougo — 100% free, no account needed.",
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 const THEME_INIT_SCRIPT = `
